@@ -2,10 +2,7 @@
 nixPkgs = ["python311", "python311Packages.pip"]
 
 [phases.install]
-cmds = ["cd bot && python -m venv /opt/venv && /opt/venv/bin/pip install -r requirements.txt"]
-
-[phases.build]
-cmds = ["echo 'Build complete'"]
+cmds = ["python -m venv /opt/venv && /opt/venv/bin/pip install -r requirements.txt"]
 
 [start]
 cmd = "cd bot && /opt/venv/bin/python main.py"
