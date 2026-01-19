@@ -17,7 +17,7 @@ async def admin_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     
     if not user or not is_admin(user.id):
-        await update.message.reply_text("⛔️ У вас немає доступу до панелі адміністратора.")
+        await update.message.reply_text("⛔️ У вас нет доступа к панели администратора.")
         return
     
     stats = get_stats()
@@ -39,7 +39,7 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     
     if not user or not is_admin(user.id):
-        await query.answer("⛔️ Доступ заборонено", show_alert=True)
+        await query.answer("⛔️ Доступ запрещён", show_alert=True)
         return
     
     await query.answer()
@@ -65,9 +65,9 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         stats_text = f"""
 📊 <b>Статистика</b>
 
-👥 Всього користувачів: <b>{stats['total']}</b>
-✅ У whitelist: <b>{stats['whitelisted']}</b>
-❌ Без доступу: <b>{stats['total'] - stats['whitelisted']}</b>
+👥 Всего пользователей: <b>{stats['total']}</b>
+✅ В whitelist: <b>{stats['whitelisted']}</b>
+❌ Без доступа: <b>{stats['total'] - stats['whitelisted']}</b>
 """
         await query.message.edit_text(
             stats_text,
@@ -86,9 +86,9 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 name = user.get("first_name") or ""
                 users_text += f"{i}. @{username} ({tid}) - {name}\n"
             if len(users) > 20:
-                users_text += f"\n... та ще {len(users) - 20} користувачів"
+                users_text += f"\n... и ещё {len(users) - 20} пользователей"
         else:
-            users_text = "📋 <b>Whitelist порожній</b>"
+            users_text = "📋 <b>Whitelist пуст</b>"
         
         await query.message.edit_text(
             users_text,
@@ -100,10 +100,10 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Prompt to add user
         context.user_data["admin_action"] = "add"
         await query.message.edit_text(
-            "➕ <b>Додати користувача</b>\n\n"
-            "Надішліть username (з @) або Telegram ID:\n\n"
-            "Приклад: <code>@username</code> або <code>123456789</code>\n\n"
-            "Для скасування натисніть /admin",
+            "➕ <b>Добавить пользователя</b>\n\n"
+            "Отправьте username (с @) или Telegram ID:\n\n"
+            "Пример: <code>@username</code> или <code>123456789</code>\n\n"
+            "Для отмены нажмите /admin",
             parse_mode="HTML",
             reply_markup=get_back_keyboard(),
         )
@@ -112,10 +112,10 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Prompt to remove user
         context.user_data["admin_action"] = "remove"
         await query.message.edit_text(
-            "➖ <b>Видалити користувача</b>\n\n"
-            "Надішліть username (з @) або Telegram ID:\n\n"
-            "Приклад: <code>@username</code> або <code>123456789</code>\n\n"
-            "Для скасування натисніть /admin",
+            "➖ <b>Удалить пользователя</b>\n\n"
+            "Отправьте username (с @) или Telegram ID:\n\n"
+            "Пример: <code>@username</code> или <code>123456789</code>\n\n"
+            "Для отмены нажмите /admin",
             parse_mode="HTML",
             reply_markup=get_back_keyboard(),
         )
@@ -137,24 +137,24 @@ async def admin_text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
         result = add_to_whitelist(text)
         if result:
             await update.message.reply_text(
-                f"✅ Користувача <b>{result}</b> додано до whitelist!",
+                f"✅ Пользователь <b>{result}</b> добавлен в whitelist!",
                 parse_mode="HTML",
             )
         else:
             await update.message.reply_text(
-                f"❌ Не вдалося додати користувача. Перевірте дані.",
+                f"❌ Не удалось добавить пользователя. Проверьте данные.",
                 parse_mode="HTML",
             )
     elif action == "remove":
         result = remove_from_whitelist(text)
         if result:
             await update.message.reply_text(
-                f"✅ Користувача <b>{result}</b> видалено з whitelist!",
+                f"✅ Пользователь <b>{result}</b> удалён из whitelist!",
                 parse_mode="HTML",
             )
         else:
             await update.message.reply_text(
-                f"❌ Не вдалося видалити користувача. Перевірте дані.",
+                f"❌ Не удалось удалить пользователя. Проверьте данные.",
                 parse_mode="HTML",
             )
     

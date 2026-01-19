@@ -22,7 +22,7 @@ def main():
     # Check if BOT_TOKEN is set
     if not BOT_TOKEN:
         logger.error("❌ BOT_TOKEN not set! Please set it in .env file")
-        print("\n⚠️  Створіть файл .env з наступним вмістом:")
+        print("\n⚠️  Создайте файл .env со следующим содержимым:")
         print("BOT_TOKEN=your_bot_token_here")
         print("ADMIN_IDS=your_telegram_id")
         print("MINI_APP_URL=https://t.me/your_bot/app")
@@ -44,13 +44,13 @@ def main():
     # Start polling
     logger.info("🤖 Bot starting...")
     print("\n" + "="*50)
-    print("🤖 AI Trade Bot запущено!")
+    print("🤖 AI Trade Bot запущен!")
     print("="*50)
-    print("\nКоманди:")
-    print("  /start - Почати роботу")
-    print("  /admin - Панель адміністратора")
-    print("  /help  - Довідка")
-    print("\nДля зупинки натисніть Ctrl+C")
+    print("\nКоманды:")
+    print("  /start - Начать работу")
+    print("  /admin - Панель администратора")
+    print("  /help  - Справка")
+    print("\nДля остановки нажмите Ctrl+C")
     print("="*50 + "\n")
     
     app.run_polling(allowed_updates=["message", "callback_query"])
