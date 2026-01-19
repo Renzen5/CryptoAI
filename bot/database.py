@@ -46,20 +46,24 @@ def add_user(
     try:
         existing = get_user(telegram_id)
         
-        user_data = {
-            "telegram_id": str(telegram_id),
-            "username": username,
-            "first_name": first_name,
-            "is_whitelisted": is_whitelisted,
-            "updated_at": datetime.utcnow().isoformat(),
-        }
-        
         if existing:
-            # Update existing user
+            # Update existing user - DO NOT overwrite is_whitelisted!
+            user_data = {
+                "username": username,
+                "first_name": first_name,
+                "updated_at": datetime.utcnow().isoformat(),
+            }
             supabase.table("users").update(user_data).eq("telegram_id", str(telegram_id)).execute()
         else:
             # Insert new user
-            user_data["created_at"] = datetime.utcnow().isoformat()
+            user_data = {
+                "telegram_id": str(telegram_id),
+                "username": username,
+                "first_name": first_name,
+                "is_whitelisted": is_whitelisted,
+                "created_at": datetime.utcnow().isoformat(),
+                "updated_at": datetime.utcnow().isoformat(),
+            }
             supabase.table("users").insert(user_data).execute()
         
         return True
