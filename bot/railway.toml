@@ -1,0 +1,12 @@
+[build]
+builder = "nixpacks"
+
+[build.env]
+PYTHON_VERSION = "3.11"
+
+[deploy]
+startCommand = "python main.py"
+healthcheckPath = "/"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
