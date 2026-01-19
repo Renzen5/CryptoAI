@@ -87,7 +87,7 @@ function NewsCard({ news, onSetReminder }: NewsCardProps) {
                         </div>
                         {/* PREVIOUS */}
                         <div className="flex justify-between items-center">
-                            <span className="text-gray-500 font-bold text-sm uppercase">ПОПЕР:</span>
+                            <span className="text-gray-500 font-bold text-sm uppercase">ПРЕД:</span>
                             <span className="text-white font-bold text-sm">{news.previous || '-'}</span>
                         </div>
                     </div>
@@ -102,7 +102,7 @@ function NewsCard({ news, onSetReminder }: NewsCardProps) {
                         onClick={handleReminder}
                         className="w-full py-3 rounded-xl bg-[#22c55e] hover:bg-green-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all text-center uppercase"
                     >
-                        <span>сповіщення</span>
+                        <span>Уведомление</span>
                         <span>🔔</span>
                     </button>
 

@@ -61,7 +61,7 @@ function ChatMessage({ message }: ChatMessageProps) {
             ${isUser ? 'text-white/60' : 'text-foreground-muted'}
           `}
                 >
-                    {message.createdAt.toLocaleTimeString('uk-UA', {
+                    {message.createdAt.toLocaleTimeString('ru-RU', {
                         hour: '2-digit',
                         minute: '2-digit'
                     })}

@@ -107,7 +107,7 @@ export default function ChatPage() {
                     <input
                         ref={inputRef}
                         type="text"
-                        placeholder="Запитай у штучного інтелекту..."
+                        placeholder="Спросите у искусственного интеллекта..."
                         onKeyDown={handleKeyDown}
                         className="w-full bg-[#141b2d] text-white placeholder-gray-500 rounded-full py-4 pl-6 pr-14 border border-blue-500/30 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none shadow-[0_0_15px_rgba(37,99,235,0.1)] transition-all"
                     />

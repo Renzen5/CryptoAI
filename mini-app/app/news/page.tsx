@@ -8,12 +8,12 @@ import { fetchNews, sortNewsByTime, getAvailableCurrencies } from '@/lib/news';
 import { hapticFeedback } from '@/lib/telegram';
 
 // Available currency filters
-const CURRENCY_TABS = ['Всі', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD'];
+const CURRENCY_TABS = ['Все', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD'];
 
 export default function NewsPage() {
     const [news, setNews] = useState<NewsItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedCurrency, setSelectedCurrency] = useState<string>('Всі');
+    const [selectedCurrency, setSelectedCurrency] = useState<string>('Все');
     const [error, setError] = useState<string | null>(null);
 
     // Fetch news on mount and when filter changes
@@ -26,12 +26,12 @@ export default function NewsPage() {
         setError(null);
 
         try {
-            const currency = selectedCurrency === 'Всі' ? undefined : selectedCurrency;
+            const currency = selectedCurrency === 'Все' ? undefined : selectedCurrency;
             const data = await fetchNews(currency);
             setNews(sortNewsByTime(data));
         } catch (err) {
             console.error('Error loading news:', err);
-            setError('Не вдалося завантажити новини');
+            setError('Не удалось загрузить новости');
         } finally {
             setIsLoading(false);
         }
@@ -46,7 +46,7 @@ export default function NewsPage() {
         const newsItem = news.find(n => n.id === newsId);
         if (newsItem) {
             // TODO: Implement actual reminder via Telegram notification
-            alert(`Нагадування встановлено для: ${newsItem.title}`);
+            alert(`Напоминание установлено для: ${newsItem.title}`);
             hapticFeedback.success();
         }
     };
@@ -56,7 +56,7 @@ export default function NewsPage() {
     const pastNews = news.filter(n => new Date(n.time) <= new Date());
 
     return (
-        <Layout showHeader title="НОВИНИ">
+        <Layout showHeader title="НОВОСТИ">
             <div className="flex flex-col h-full">
                 {/* Currency Tabs */}
                 <div className="px-4 py-3 border-b border-white/5">
@@ -85,7 +85,7 @@ export default function NewsPage() {
                     {isLoading ? (
                         <div className="flex flex-col items-center justify-center py-12">
                             <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-                            <p className="text-foreground-muted mt-4">Завантаження...</p>
+                            <p className="text-foreground-muted mt-4">Загрузка...</p>
                         </div>
                     ) : error ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -95,15 +95,15 @@ export default function NewsPage() {
                                 onClick={loadNews}
                                 className="mt-4 px-4 py-2 rounded-lg bg-accent text-white text-sm"
                             >
-                                Спробувати знову
+                                Попробовать снова
                             </button>
                         </div>
                     ) : news.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
                             <div className="text-6xl mb-4">📰</div>
-                            <h3 className="text-lg font-semibold mb-2">Немає новин</h3>
+                            <h3 className="text-lg font-semibold mb-2">Нет новостей</h3>
                             <p className="text-foreground-muted text-sm">
-                                Для цієї валюти немає подій
+                                Для этой валюты нет событий
                             </p>
                         </div>
                     ) : (
@@ -112,7 +112,7 @@ export default function NewsPage() {
                             {upcomingNews.length > 0 && (
                                 <div>
                                     <div className="flex items-center gap-3 mb-3">
-                                        <h3 className="text-sm font-semibold text-accent">Очікуються</h3>
+                                        <h3 className="text-sm font-semibold text-accent">Ожидаются</h3>
                                         <div className="flex-1 h-px bg-accent/30" />
                                         <span className="text-xs text-accent">{upcomingNews.length}</span>
                                     </div>
@@ -132,7 +132,7 @@ export default function NewsPage() {
                             {pastNews.length > 0 && (
                                 <div>
                                     <div className="flex items-center gap-3 mb-3 mt-6">
-                                        <h3 className="text-sm font-semibold text-foreground-muted">Минулі</h3>
+                                        <h3 className="text-sm font-semibold text-foreground-muted">Прошедшие</h3>
                                         <div className="flex-1 h-px bg-white/10" />
                                         <span className="text-xs text-foreground-muted">{pastNews.length}</span>
                                     </div>
@@ -155,7 +155,7 @@ export default function NewsPage() {
                 {news.length > 0 && (
                     <div className="px-4 py-3 border-t border-white/5">
                         <p className="text-center text-foreground-muted text-xs">
-                            {news.length} подій • Оновлено о {new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
+                            {news.length} событий • Обновлено в {new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
                         </p>
                     </div>
                 )}

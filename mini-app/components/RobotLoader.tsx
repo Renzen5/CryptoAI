@@ -40,7 +40,7 @@ export default function RobotLoader({ isVisible }: RobotLoaderProps) {
 
             <div className="bg-[#1e293b] px-8 py-3 rounded-full border border-white/10 shadow-lg">
                 <p className="text-white font-bold text-lg animate-pulse">
-                    Пошук сигналу...
+                    Поиск сигнала...
                 </p>
             </div>
         </div>

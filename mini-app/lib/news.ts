@@ -20,7 +20,7 @@ export const MOCK_NEWS: NewsItem[] = [
         time: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
         currency: 'JPY',
         flag: '🇯🇵',
-        title: 'Індекс BSI умов бізнесу',
+        title: 'Индекс BSI условий бизнеса',
         impact: 2,
         actual: undefined,
         forecast: '7.2',
@@ -31,7 +31,7 @@ export const MOCK_NEWS: NewsItem[] = [
         time: new Date(Date.now() + 7200000).toISOString(), // 2 hours from now
         currency: 'JPY',
         flag: '🇯🇵',
-        title: 'Покупки іноземних облігацій',
+        title: 'Покупки иностранных облигаций',
         impact: 1,
         actual: undefined,
         forecast: '¥1,250B',
@@ -42,7 +42,7 @@ export const MOCK_NEWS: NewsItem[] = [
         time: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
         currency: 'EUR',
         flag: '🇪🇺',
-        title: 'Ставка депозитів ЄЦБ',
+        title: 'Ставка депозитов ЕЦБ',
         impact: 3,
         actual: '4.00%',
         forecast: '4.00%',
@@ -53,7 +53,7 @@ export const MOCK_NEWS: NewsItem[] = [
         time: new Date(Date.now() + 10800000).toISOString(), // 3 hours from now
         currency: 'USD',
         flag: '🇺🇸',
-        title: 'Індекс споживчих цін (CPI)',
+        title: 'Индекс потребительских цен (CPI)',
         impact: 3,
         actual: undefined,
         forecast: '3.2%',
@@ -64,7 +64,7 @@ export const MOCK_NEWS: NewsItem[] = [
         time: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
         currency: 'GBP',
         flag: '🇬🇧',
-        title: 'Рівень безробіття',
+        title: 'Уровень безработицы',
         impact: 2,
         actual: '4.2%',
         forecast: '4.3%',
@@ -75,7 +75,7 @@ export const MOCK_NEWS: NewsItem[] = [
         time: new Date(Date.now() + 14400000).toISOString(), // 4 hours from now
         currency: 'USD',
         flag: '🇺🇸',
-        title: 'Протокол засідання FOMC',
+        title: 'Протокол заседания FOMC',
         impact: 3,
         actual: undefined,
         forecast: undefined,
@@ -86,7 +86,7 @@ export const MOCK_NEWS: NewsItem[] = [
         time: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
         currency: 'AUD',
         flag: '🇦🇺',
-        title: 'Зміна зайнятості',
+        title: 'Изменение занятости',
         impact: 2,
         actual: '+32.5K',
         forecast: '+25.0K',
@@ -97,7 +97,7 @@ export const MOCK_NEWS: NewsItem[] = [
         time: new Date(Date.now() + 18000000).toISOString(), // 5 hours from now
         currency: 'CAD',
         flag: '🇨🇦',
-        title: 'Рішення BOC по ставці',
+        title: 'Решение BOC по ставке',
         impact: 3,
         actual: undefined,
         forecast: '5.00%',
@@ -108,7 +108,7 @@ export const MOCK_NEWS: NewsItem[] = [
         time: new Date(Date.now() + 21600000).toISOString(), // 6 hours from now
         currency: 'EUR',
         flag: '🇪🇺',
-        title: 'Промислове виробництво',
+        title: 'Промышленное производство',
         impact: 1,
         actual: undefined,
         forecast: '-0.5%',
@@ -119,7 +119,7 @@ export const MOCK_NEWS: NewsItem[] = [
         time: new Date(Date.now() - 5400000).toISOString(), // 1.5 hours ago
         currency: 'CHF',
         flag: '🇨🇭',
-        title: 'Виступ голови SNB',
+        title: 'Выступление главы SNB',
         impact: 2,
         actual: 'Завершено',
         forecast: undefined,
@@ -164,7 +164,7 @@ export function formatNewsTime(isoTime: string): { time: string; relative: strin
     const diffMins = Math.round(diffMs / 60000);
     const isPast = diffMs < 0;
 
-    const time = date.toLocaleTimeString('uk-UA', {
+    const time = date.toLocaleTimeString('ru-RU', {
         hour: '2-digit',
         minute: '2-digit',
     });
@@ -172,16 +172,16 @@ export function formatNewsTime(isoTime: string): { time: string; relative: strin
     let relative: string;
 
     if (Math.abs(diffMins) < 1) {
-        relative = 'Зараз';
+        relative = 'Сейчас';
     } else if (Math.abs(diffMins) < 60) {
         relative = isPast
-            ? `${Math.abs(diffMins)} хв тому`
-            : `Через ${diffMins} хв`;
+            ? `${Math.abs(diffMins)} мин назад`
+            : `Через ${diffMins} мин`;
     } else {
         const hours = Math.abs(Math.round(diffMins / 60));
         relative = isPast
-            ? `${hours} год тому`
-            : `Через ${hours} год`;
+            ? `${hours} ч назад`
+            : `Через ${hours} ч`;
     }
 
     return { time, relative, isPast };

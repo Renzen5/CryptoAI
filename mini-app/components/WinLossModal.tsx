@@ -72,7 +72,7 @@ export default function WinLossModal({ isVisible, result, onClose, pairName }: W
 
                     {/* Signal Details (Reusing the look from SignalResult but static) */}
                     <div className={`bg-[#1a2130] rounded-xl p-4 mb-3 text-left border-l-4 ${isWin ? 'border-[#22c55e]' : 'border-red-500'}`}>
-                        <span className="text-gray-400 text-xs block mb-1">Валютна пара</span>
+                        <span className="text-gray-400 text-xs block mb-1">Валютная пара</span>
                         <div className="flex items-center gap-2">
                             <span className="text-2xl">{pairName || 'EUR/USD'}</span>
                         </div>
@@ -81,20 +81,20 @@ export default function WinLossModal({ isVisible, result, onClose, pairName }: W
                     <div className="flex gap-3 mb-3">
                         <div className="flex-1 bg-[#1a2130] rounded-xl p-3 text-left">
                             <span className="text-gray-400 text-xs block mb-1">Таймфрейм</span>
-                            <span className="text-white font-bold">5хв</span> {/* Placeholder */}
+                            <span className="text-white font-bold">5мин</span> {/* Placeholder */}
                         </div>
                         <div className="flex-1 bg-[#1a2130] rounded-xl p-3 text-left">
-                            <span className="text-gray-400 text-xs block mb-1">Точність</span>
+                            <span className="text-gray-400 text-xs block mb-1">Точность</span>
                             <span className="text-white font-bold">85%</span>
                         </div>
                     </div>
 
                     <div className="bg-[#1a2130] rounded-xl p-4 text-left">
-                        <span className="text-gray-400 text-xs block mb-1">Напрям</span>
+                        <span className="text-gray-400 text-xs block mb-1">Направление</span>
                         <div className="flex items-center gap-2 text-white font-bold">
                             {/* Just displaying generic data for the updated view unless we pass more props */}
                             <span className={isWin ? 'text-green-500' : 'text-red-500'}>
-                                {isWin ? 'Вгору' : 'Вниз'}
+                                {isWin ? 'Вверх' : 'Вниз'}
                             </span>
                         </div>
                     </div>
@@ -105,7 +105,7 @@ export default function WinLossModal({ isVisible, result, onClose, pairName }: W
                     onClick={onClose}
                     className="mt-8 w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg shadow-lg active:scale-95 transition-all uppercase"
                 >
-                    НА ГОЛОВНУ
+                    НА ГЛАВНУЮ
                 </button>
 
             </div>

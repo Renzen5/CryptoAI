@@ -20,7 +20,7 @@ export default function MorePage() {
             {/* Custom Header to match screenshot */}
             <div className="fixed top-0 left-0 right-0 z-40 pt-safe bg-background/50 backdrop-blur-sm">
                 <div className="flex items-center justify-center h-14 relative">
-                    <h1 className="text-xl font-bold tracking-wide text-white">ПІДТРИМКА</h1>
+                    <h1 className="text-xl font-bold tracking-wide text-white">ПОДДЕРЖКА</h1>
                 </div>
             </div>
 
@@ -43,7 +43,7 @@ export default function MorePage() {
 
                 {/* Text */}
                 <p className="text-gray-300 text-center text-lg mb-10 font-medium">
-                    Маєш питання чи труднощі?
+                    Есть вопросы или проблемы?
                 </p>
 
                 {/* Button */}
@@ -51,7 +51,7 @@ export default function MorePage() {
                     onClick={handleContactSupport}
                     className="w-full max-w-sm bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-[0_4px_20px_rgba(37,99,235,0.4)] transition-all active:scale-95 uppercase tracking-wide"
                 >
-                    НАПИСАТИ В ПІДТРИМКУ
+                    НАПИСАТЬ В ПОДДЕРЖКУ
                 </button>
 
             </div>

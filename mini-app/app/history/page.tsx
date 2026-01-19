@@ -16,7 +16,7 @@ const MOCK_SIGNALS: DBSignal[] = [
         timeframe: 5,
         accuracy: 87,
         result: 'WIN',
-        ai_reason: 'RSI показує перепроданість',
+        ai_reason: 'RSI показывает перепроданность',
         entry_price: 1.0856,
         exit_price: 1.0862,
         entry_time: new Date(Date.now() - 3600000).toISOString(),
@@ -32,7 +32,7 @@ const MOCK_SIGNALS: DBSignal[] = [
         timeframe: 3,
         accuracy: 82,
         result: 'LOSE',
-        ai_reason: 'Пробій рівня підтримки',
+        ai_reason: 'Пробой уровня поддержки',
         entry_price: 1.2645,
         exit_price: 1.2652,
         entry_time: new Date(Date.now() - 7200000).toISOString(),
@@ -48,7 +48,7 @@ const MOCK_SIGNALS: DBSignal[] = [
         timeframe: 5,
         accuracy: 91,
         result: 'WIN',
-        ai_reason: 'MACD показує бичачу дивергенцію',
+        ai_reason: 'MACD показывает бычью дивергенцию',
         entry_price: 149.25,
         exit_price: 149.38,
         entry_time: new Date(Date.now() - 86400000).toISOString(),
@@ -64,7 +64,7 @@ const MOCK_SIGNALS: DBSignal[] = [
         timeframe: 7,
         accuracy: 78,
         result: 'NEUTRAL',
-        ai_reason: 'Боковий тренд',
+        ai_reason: 'Боковой тренд',
         entry_price: 0.6542,
         exit_price: 0.6542,
         entry_time: new Date(Date.now() - 90000000).toISOString(),
@@ -80,7 +80,7 @@ const MOCK_SIGNALS: DBSignal[] = [
         timeframe: 10,
         accuracy: 85,
         result: 'CANCEL',
-        ai_reason: 'Сигнал скасовано користувачем',
+        ai_reason: 'Сигнал отменён пользователем',
         entry_price: null,
         exit_price: null,
         entry_time: new Date(Date.now() - 172800000).toISOString(),
@@ -102,11 +102,11 @@ function groupSignalsByDate(signals: DBSignal[]): Map<string, DBSignal[]> {
         let dateKey: string;
 
         if (date.toDateString() === today.toDateString()) {
-            dateKey = 'Сьогодні';
+            dateKey = 'Сегодня';
         } else if (date.toDateString() === yesterday.toDateString()) {
-            dateKey = 'Вчора';
+            dateKey = 'Вчера';
         } else {
-            dateKey = date.toLocaleDateString('uk-UA', {
+            dateKey = date.toLocaleDateString('ru-RU', {
                 day: 'numeric',
                 month: 'long',
             });
@@ -166,42 +166,20 @@ export default function HistoryPage() {
     const groupedSignals = groupSignalsByDate(signals);
 
     return (
-        <Layout showHeader title="ІСТОРІЯ УГОД">
+        <Layout showHeader title="ИСТОРИЯ СДЕЛОК">
             <div className="px-4 py-4">
-                {/* Stats Cards */}
-                {/* Stats Cards - Hidden to match exact screenshot design
-                <div className="grid grid-cols-4 gap-2 mb-6">
-                    <div className="card p-3 text-center">
-                        <p className="text-lg font-bold">{stats.total}</p>
-                        <p className="text-[10px] text-foreground-muted">Всього</p>
-                    </div>
-                    <div className="card p-3 text-center">
-                        <p className="text-lg font-bold text-success">{stats.wins}</p>
-                        <p className="text-[10px] text-foreground-muted">Виграші</p>
-                    </div>
-                    <div className="card p-3 text-center">
-                        <p className="text-lg font-bold text-danger">{stats.losses}</p>
-                        <p className="text-[10px] text-foreground-muted">Програші</p>
-                    </div>
-                    <div className="card p-3 text-center">
-                        <p className="text-lg font-bold text-accent">{stats.winRate}%</p>
-                        <p className="text-[10px] text-foreground-muted">Win Rate</p>
-                    </div>
-                </div>
-                */}
-
                 {/* Signals List */}
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-12">
                         <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-                        <p className="text-foreground-muted mt-4">Завантаження...</p>
+                        <p className="text-foreground-muted mt-4">Загрузка...</p>
                     </div>
                 ) : signals.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
                         <div className="text-6xl mb-4">📊</div>
-                        <h3 className="text-lg font-semibold mb-2">Історія порожня</h3>
+                        <h3 className="text-lg font-semibold mb-2">История пуста</h3>
                         <p className="text-foreground-muted text-sm">
-                            Ваші сигнали будуть відображатися тут
+                            Ваши сигналы будут отображаться здесь
                         </p>
                     </div>
                 ) : (
@@ -229,7 +207,7 @@ export default function HistoryPage() {
                 {/* Info note */}
                 {signals.length > 0 && (
                     <p className="text-center text-foreground-muted text-xs mt-6 opacity-60">
-                        Показано останні {signals.length} сигналів
+                        Показано последних {signals.length} сигналов
                     </p>
                 )}
             </div>

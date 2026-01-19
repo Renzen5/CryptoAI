@@ -18,7 +18,7 @@ export default function TradePage() {
   const [selectedPair, setSelectedPair] = useState<CurrencyPair>(CURRENCY_PAIRS[0]);
   const [direction, setDirection] = useState<SignalDirection>('AUTO');
   const [timeframe, setTimeframe] = useState<number>(5);
-  const [language, setLanguage] = useState<LanguageCode>('uk');
+  const [language, setLanguage] = useState<LanguageCode>('ru');
   const [accuracy, setAccuracy] = useState<number>(85);
 
   // Signal flow state
@@ -142,7 +142,7 @@ export default function TradePage() {
           {/* Info Text */}
           <div className="text-center mb-8 px-4">
             <p className="text-white font-bold text-lg leading-relaxed drop-shadow-md">
-              Натисніть кнопку 'Отримати новий сигнал', щоб почати
+              Нажмите кнопку 'Получить новый сигнал', чтобы начать
             </p>
           </div>
 
@@ -165,7 +165,7 @@ export default function TradePage() {
               }
             `}
           >
-            ОТРИМАТИ НОВИЙ СИГНАЛ
+            ПОЛУЧИТЬ НОВЫЙ СИГНАЛ
           </button>
 
         </div>

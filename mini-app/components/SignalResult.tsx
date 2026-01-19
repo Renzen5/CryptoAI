@@ -57,7 +57,7 @@ export default function SignalResult({
 
     const endTime = new Date();
     endTime.setMinutes(endTime.getMinutes() + signal.timeframe);
-    const endTimeStr = endTime.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+    const endTimeStr = endTime.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
     const isUp = signal.direction === 'UP' || signal.direction.includes('Buy');
 
@@ -77,7 +77,7 @@ export default function SignalResult({
 
                     {/* Currency Pair Section */}
                     <div className="bg-[#1a2130] rounded-2xl p-4 mb-3">
-                        <span className="text-gray-400 text-xs block mb-1">Валютна пара</span>
+                        <span className="text-gray-400 text-xs block mb-1">Валютная пара</span>
                         <div className="flex items-center gap-3">
                             <span className="text-3xl">{signal.pair.flag1}{signal.pair.flag2}</span>
                             <span className="text-white text-xl font-bold">{signal.pair.name}</span>
@@ -88,17 +88,17 @@ export default function SignalResult({
                     <div className="flex gap-3 mb-3">
                         <div className="flex-1 bg-[#1a2130] rounded-2xl p-4">
                             <span className="text-gray-400 text-xs block mb-1">Таймфрейм</span>
-                            <span className="text-white text-lg font-bold">{signal.timeframe}хв</span>
+                            <span className="text-white text-lg font-bold">{signal.timeframe}мин</span>
                         </div>
                         <div className="flex-1 bg-[#1a2130] rounded-2xl p-4">
-                            <span className="text-gray-400 text-xs block mb-1">Точність</span>
+                            <span className="text-gray-400 text-xs block mb-1">Точность</span>
                             <span className="text-white text-lg font-bold">{signal.accuracy}%</span>
                         </div>
                     </div>
 
                     {/* Direction Section */}
                     <div className="bg-[#1a2130] rounded-2xl p-4 mb-3">
-                        <span className="text-gray-400 text-xs block mb-1">Напрям</span>
+                        <span className="text-gray-400 text-xs block mb-1">Направление</span>
                         <div className="flex items-center gap-2">
                             <svg
                                 className={`w-6 h-6 ${isUp ? 'text-green-500' : 'text-red-500'}`}
@@ -107,7 +107,7 @@ export default function SignalResult({
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d={isUp ? "M5 10l7-7m0 0l7 7m-7-7v18" : "M19 14l-7 7m0 0l-7-7m7 7V3"} />
                             </svg>
                             <span className={`text-xl font-bold ${isUp ? 'text-green-500' : 'text-red-500'}`}>
-                                {isUp ? 'Вгору' : 'Вниз'}
+                                {isUp ? 'Вверх' : 'Вниз'}
                             </span>
                             <span className="text-white font-medium ml-1">
                                 до {endTimeStr}
@@ -117,7 +117,7 @@ export default function SignalResult({
 
                     {/* Progress Section */}
                     <div className="bg-[#1a2130] rounded-2xl p-4">
-                        <span className="text-gray-400 text-xs block mb-3">Час до завершення</span>
+                        <span className="text-gray-400 text-xs block mb-3">Время до завершения</span>
                         <div className="relative h-4 bg-black/40 rounded-full mb-3 overflow-hidden box-border border border-white/5">
                             <div
                                 className="absolute top-0 left-0 h-full bg-[#22c55e] rounded-full shadow-[0_0_15px_rgba(34,197,94,0.6)] transition-all duration-1000 ease-linear"
@@ -137,7 +137,7 @@ export default function SignalResult({
                         className="w-full py-4 rounded-xl bg-gradient-to-b from-gray-700 to-gray-800 text-gray-300 font-bold text-lg opacity-80"
                         disabled
                     >
-                        ОТРИМАТИ НОВИЙ СИГНАЛ
+                        ПОЛУЧИТЬ НОВЫЙ СИГНАЛ
                     </button>
 
                     <button
@@ -147,7 +147,7 @@ export default function SignalResult({
                         }}
                         className="w-full py-4 rounded-xl bg-[#2563eb] hover:bg-blue-600 text-white font-bold text-lg shadow-lg active:scale-95 transition-all"
                     >
-                        НА ГОЛОВНУ
+                        НА ГЛАВНУЮ
                     </button>
                 </div>
 

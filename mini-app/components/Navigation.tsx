@@ -6,7 +6,7 @@ import { hapticFeedback } from '@/lib/telegram';
 
 const NAV_ITEMS = [
   {
-    name: 'Новини',
+    name: 'Новости',
     path: '/news',
     icon: (isActive: boolean) => (
       <svg className={`w-6 h-6 ${isActive ? 'text-blue-500' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,7 +15,7 @@ const NAV_ITEMS = [
     ),
   },
   {
-    name: 'Історія',
+    name: 'История',
     path: '/history',
     icon: (isActive: boolean) => (
       <svg className={`w-6 h-6 ${isActive ? 'text-blue-500' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,7 +52,7 @@ const NAV_ITEMS = [
     ),
   },
   {
-    name: 'Підтримка',
+    name: 'Ещё',
     path: '/more',
     icon: (isActive: boolean) => (
       <svg className={`w-6 h-6 ${isActive ? 'text-blue-500' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
