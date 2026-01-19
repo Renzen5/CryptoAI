@@ -66,11 +66,11 @@ export async function POST(request: NextRequest) {
             try {
                 const { data: whitelistEntry, error } = await supabase
                     .from('users')
-                    .select('id, is_active, telegram_id')
-                    .eq('telegram_id', user.id)
+                    .select('id, is_whitelisted, telegram_id')
+                    .eq('telegram_id', String(user.id))
                     .single();
 
-                if (!error && whitelistEntry && whitelistEntry.is_active) {
+                if (!error && whitelistEntry && whitelistEntry.is_whitelisted) {
                     isWhitelisted = true;
 
                     // Update last_active timestamp
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
                             last_name: user.last_name || null,
                             username: user.username || null,
                         })
-                        .eq('telegram_id', user.id);
+                        .eq('telegram_id', String(user.id));
                 }
             } catch (dbError) {
                 console.error('Database error checking whitelist:', dbError);
