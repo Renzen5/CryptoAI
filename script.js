@@ -1,3 +1,29 @@
+// Mobile Menu Toggle
+function toggleMenu() {
+    const nav = document.querySelector('.nav');
+    const menuToggle = document.querySelector('.menu-toggle');
+
+    if (nav && menuToggle) {
+        nav.classList.toggle('active');
+        menuToggle.classList.toggle('active');
+    }
+}
+
+// Close menu when clicking on a link
+document.addEventListener('DOMContentLoaded', function () {
+    const navLinks = document.querySelectorAll('.nav a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function () {
+            const nav = document.querySelector('.nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (nav && menuToggle) {
+                nav.classList.remove('active');
+                menuToggle.classList.remove('active');
+            }
+        });
+    });
+});
+
 // Cookie Banner Logic
 document.addEventListener('DOMContentLoaded', function () {
     const cookieBanner = document.getElementById('cookieBanner');

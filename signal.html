@@ -231,6 +231,11 @@
                     <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fd142955c-9bac-4f92-a3e7-1dccd050ad2f.png"
                         alt="User" width="20" height="20">
                 </button>
+                <button class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </header>
@@ -354,6 +359,16 @@
     </footer>
 
     <script>
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const nav = document.querySelector('.nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (nav && menuToggle) {
+                nav.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            }
+        }
+
         // FAQ Accordion
         document.querySelectorAll('.signal-faq-header').forEach(header => {
             header.addEventListener('click', () => {

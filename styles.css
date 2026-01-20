@@ -666,6 +666,37 @@ a {
 }
 
 /* Responsive */
+
+/* Mobile Menu Toggle */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 2px;
+    background: #fbfbfb;
+    transition: all 0.3s ease;
+}
+
+/* Large Desktop */
+@media (max-width: 1400px) {
+
+    .container,
+    .header-container,
+    .hero-content {
+        padding-left: 60px;
+        padding-right: 60px;
+    }
+}
+
+/* Desktop / Tablet Landscape */
 @media (max-width: 1200px) {
 
     .container,
@@ -684,24 +715,65 @@ a {
         align-self: center;
     }
 
+    .hero-title {
+        font-size: 56px;
+    }
+
     .features-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
     .tools-content {
         flex-direction: column;
+        gap: 40px;
     }
-}
 
-@media (max-width: 768px) {
-
-    .container,
-    .header-container {
-        padding: 0 20px;
+    .nav-link {
+        font-size: 14px;
     }
 
     .nav {
-        display: none;
+        gap: 16px;
+    }
+
+    .section-title {
+        font-size: 40px;
+    }
+}
+
+/* Tablet Portrait */
+@media (max-width: 992px) {
+    .menu-toggle {
+        display: flex;
+    }
+
+    .nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: #14131D;
+        flex-direction: column;
+        padding: 80px 30px 30px;
+        gap: 24px;
+        transition: right 0.3s ease;
+        z-index: 999;
+    }
+
+    .nav.active {
+        right: 0;
+    }
+
+    .nav-link {
+        font-size: 18px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .hero {
+        min-height: auto;
+        padding-bottom: 60px;
     }
 
     .hero-title {
@@ -709,36 +781,224 @@ a {
     }
 
     .hero-subtitle {
-        font-size: 18px;
-    }
-
-    .section-title {
-        font-size: 32px;
-    }
-
-    .section-subtitle {
-        font-size: 18px;
-    }
-
-    .features-grid {
-        grid-template-columns: 1fr;
+        font-size: 20px;
     }
 
     .steps {
         flex-direction: column;
+        gap: 16px;
+        padding: 24px;
+    }
+
+    .step-title {
+        font-size: 20px;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
         gap: 20px;
     }
 
+    .feature-card {
+        padding: 24px 30px;
+    }
+
+    .logo-img {
+        width: 150px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    .container,
+    .header-container {
+        padding: 0 20px;
+    }
+
+    .hero-content {
+        padding: 0 20px;
+        padding-top: 100px;
+    }
+
+    .hero {
+        min-height: auto;
+        padding-top: 80px;
+        padding-bottom: 40px;
+    }
+
+    .hero-title {
+        font-size: 36px;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 16px;
+    }
+
+    .hero-text {
+        text-align: center;
+    }
+
+    .section-title {
+        font-size: 28px;
+    }
+
+    .section-subtitle {
+        font-size: 16px;
+    }
+
     .stat-card {
-        width: 280px;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .features,
+    .how-it-works,
+    .tools,
+    .trading-pairs,
+    .faq {
+        padding: 50px 0;
+    }
+
+    .faq-question {
+        font-size: 16px;
+    }
+
+    .faq-header {
+        padding: 16px 20px;
+    }
+
+    .faq-answer {
+        padding: 0 20px;
+    }
+
+    .faq-item.active .faq-answer {
+        padding: 0 20px 16px 20px;
+    }
+
+    .cta-card {
+        padding: 40px 24px;
+    }
+
+    .cta-text {
+        font-size: 16px;
     }
 
     .cookie-banner {
         width: calc(100% - 40px);
         bottom: 20px;
+        padding: 16px 20px;
+    }
+
+    .cookie-title {
+        font-size: 16px;
+    }
+
+    .tool-item {
+        flex-direction: column;
+    }
+
+    .tool-indicator {
+        width: 100%;
+        height: 4px;
+    }
+
+    .pairs-image {
+        overflow-x: auto;
+    }
+
+    .pairs-image img {
+        min-width: 600px;
+    }
+
+    .logo-img {
+        width: 120px;
+        height: auto;
+    }
+
+    .santa-hat {
+        font-size: 18px;
+        top: -10px;
+        left: -5px;
+    }
+
+    .header {
+        padding: 12px 0;
+    }
+
+    .header-actions {
+        gap: 12px;
+    }
+
+    .lang-btn {
+        font-size: 16px;
+    }
+
+    .lang-btn span {
+        display: none;
+    }
+
+    .footer-links {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 28px;
+    }
+
+    .hero-subtitle {
+        font-size: 14px;
+    }
+
+    .section-title {
+        font-size: 24px;
+    }
+
+    .section-subtitle {
+        font-size: 14px;
+    }
+
+    .stat-card {
+        height: auto;
+        padding: 16px;
+    }
+
+    .stat-number {
+        font-size: 24px;
+    }
+
+    .stat-label {
+        font-size: 14px;
+    }
+
+    .feature-title {
+        font-size: 18px;
+    }
+
+    .feature-desc {
+        font-size: 14px;
     }
 
     .faq-question {
-        font-size: 16px;
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 10px 24px;
+        font-size: 14px;
+    }
+
+    .cta-text {
+        font-size: 14px;
+    }
+
+    .step-number,
+    .step-title {
+        font-size: 18px;
     }
 }

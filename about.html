@@ -265,6 +265,254 @@
         .carousel-nav.next {
             right: -100px;
         }
+
+        /* About Page Responsive Styles */
+        @media (max-width: 1200px) {
+            .team-grid {
+                gap: 30px;
+            }
+
+            .stats-right {
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .about-hero {
+                min-height: 400px;
+            }
+
+            .about-hero h1 {
+                font-size: 56px;
+            }
+
+            .about-description .container {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .about-description-image {
+                order: -1;
+            }
+
+            .about-description-image img {
+                max-width: 100%;
+            }
+
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+                justify-items: center;
+            }
+
+            .team-card {
+                width: 100%;
+                max-width: 280px;
+                height: auto;
+            }
+
+            .team-card-inner {
+                padding: 20px 24px;
+            }
+
+            .team-card-photo {
+                width: 160px;
+                height: 160px;
+            }
+
+            .stats-container {
+                flex-direction: column;
+                gap: 40px;
+                align-items: center;
+                text-align: center;
+            }
+
+            .stats-left {
+                max-width: 100%;
+            }
+
+            .stats-right {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 30px;
+            }
+
+            .stat-item {
+                text-align: center;
+            }
+
+            .reviews-carousel {
+                max-width: 320px;
+                height: auto;
+            }
+
+            .review-screenshot {
+                width: 100%;
+                height: auto;
+            }
+
+            .carousel-nav.prev {
+                left: -50px;
+            }
+
+            .carousel-nav.next {
+                right: -50px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .about-hero {
+                min-height: 300px;
+                padding-top: 80px;
+            }
+
+            .about-hero h1 {
+                font-size: 40px;
+            }
+
+            .about-description {
+                padding: 50px 0;
+            }
+
+            .about-description-text h2 {
+                font-size: 20px;
+            }
+
+            .about-description-text p {
+                font-size: 16px;
+            }
+
+            .team-section {
+                padding: 50px 0;
+            }
+
+            .team-section .section-subtitle {
+                font-size: 18px;
+                margin-bottom: 30px;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .team-card {
+                max-width: 260px;
+            }
+
+            .team-card-name {
+                font-size: 20px;
+            }
+
+            .team-card-role {
+                font-size: 16px;
+            }
+
+            .stats-section {
+                padding: 40px 0;
+            }
+
+            .stats-left h2 {
+                font-size: 22px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .reviews-section {
+                padding: 50px 0;
+            }
+
+            .reviews-section .section-subtitle {
+                font-size: 16px;
+                padding: 0 20px;
+            }
+
+            .reviews-carousel {
+                max-width: 280px;
+            }
+
+            .carousel-nav {
+                font-size: 18px;
+            }
+
+            .carousel-nav.prev {
+                left: 10px;
+            }
+
+            .carousel-nav.next {
+                right: 10px;
+            }
+
+            /* CTA Section */
+            .about-cta {
+                padding: 60px 20px;
+            }
+
+            .about-cta-text {
+                font-size: 20px;
+                line-height: 1.4;
+            }
+
+            /* Footer */
+            .about-footer .footer-links {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+
+            .about-footer .footer-divider {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .about-hero {
+                min-height: 250px;
+            }
+
+            .about-hero h1 {
+                font-size: 32px;
+            }
+
+            .about-description-text h2 {
+                font-size: 18px;
+            }
+
+            .about-description-text p {
+                font-size: 14px;
+            }
+
+            .team-card {
+                max-width: 240px;
+            }
+
+            .team-card-photo {
+                width: 140px;
+                height: 140px;
+            }
+
+            .stats-left h2 {
+                font-size: 18px;
+            }
+
+            .stat-number {
+                font-size: 28px;
+            }
+
+            .stat-desc {
+                font-size: 12px;
+            }
+
+            .reviews-carousel {
+                max-width: 260px;
+            }
+
+            .about-cta-text {
+                font-size: 16px;
+            }
+        }
     </style>
 </head>
 
@@ -277,7 +525,6 @@
                     <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
                         alt="AI.BOOST Logo" class="logo-img">
                 </a>
-                <span class="santa-hat">🎅</span>
             </div>
             <nav class="nav">
                 <a href="index.html" class="nav-link">Главная</a>
@@ -293,18 +540,15 @@
                     <span>RU</span>
                 </button>
                 <button class="icon-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                        </path>
-                    </svg>
-                </button>
-                <button class="icon-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbfbfb" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
+                </button>
+                <button class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
             </div>
         </div>
@@ -473,6 +717,16 @@
     </footer>
 
     <script>
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const nav = document.querySelector('.nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (nav && menuToggle) {
+                nav.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            }
+        }
+
         // Reviews carousel
         const reviews = [
             'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2F6cb34e97160cd84b23688b75696e649b37310240chat%20screenshot.png?alt=media&token=0ad6d1b9-dcdb-4b34-bb02-8884de06a7ad',
