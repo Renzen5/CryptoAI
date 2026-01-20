@@ -1,4 +1,0 @@
-# This file tells Railway to use Python
-# Actual dependencies are in bot/requirements.txt
-
--r bot/requirements.txt

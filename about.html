@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О нас - AI.BOOST</title>
+    <meta name="description" content="Узнайте больше о команде AI.BOOST и наших достижениях в сфере крипто-трейдинга">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* About Page Specific Styles */
+        .about-hero {
+            min-height: 582px;
+            background: url('https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2F548f0a18a4818f0deed6dd0842b06f257a2fe3adBackground.png?alt=media&token=32188798-6aba-420b-993c-dfbe623e4a2e') center top no-repeat;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .about-hero h1 {
+            font-size: 80px;
+            font-weight: 700;
+            color: #FBFBFB;
+        }
+
+        /* Description Section */
+        .about-description {
+            padding: 80px 0;
+            background: #0A0A0F;
+        }
+
+        .about-description .container {
+            display: flex;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-description-text {
+            flex: 1;
+        }
+
+        .about-description-text h2 {
+            font-size: 24px;
+            color: #FBFBFB;
+            margin-bottom: 24px;
+        }
+
+        .about-description-text p {
+            font-size: 20px;
+            color: #FBFBFB;
+            line-height: 1.5;
+        }
+
+        .about-description-image {
+            flex: 1;
+        }
+
+        .about-description-image img {
+            width: 100%;
+            max-width: 498px;
+            border-radius: 20px;
+        }
+
+        /* Team Section */
+        .team-section {
+            padding: 80px 0;
+            background: #0A0A0F;
+        }
+
+        .team-section .section-title {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .team-section .section-title span {
+            color: #0400FF;
+        }
+
+        .team-section .section-subtitle {
+            text-align: center;
+            font-size: 24px;
+            color: #FBFBFB;
+            margin-bottom: 48px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 45px;
+            max-width: 966px;
+            margin: 0 auto;
+        }
+
+        .team-card {
+            width: 292px;
+            height: 344px;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(90deg, #0A7CFF, transparent);
+        }
+
+        .team-card-inner {
+            width: 100%;
+            height: 100%;
+            background: #14131D;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px 40px;
+        }
+
+        .team-card-photo {
+            width: 210px;
+            height: 210px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 23px;
+        }
+
+        .team-card-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .team-card-role {
+            font-size: 18px;
+            color: #fff;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 52px 0;
+            background: #14131D;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .stats-left {
+            max-width: 374px;
+        }
+
+        .stats-left h2 {
+            font-size: 27px;
+            font-weight: 600;
+            color: #FBFBFB;
+            line-height: 1.5;
+            margin-bottom: 28px;
+        }
+
+        .stats-left h2 span {
+            color: #0400FF;
+        }
+
+        .stats-left p {
+            font-size: 14px;
+            color: #FBFBFB;
+            line-height: 1.5;
+        }
+
+        .stats-right {
+            display: flex;
+            gap: 80px;
+        }
+
+        .stat-item {
+            text-align: left;
+        }
+
+        .stat-number {
+            font-size: 44px;
+            color: #FBFBFB;
+            margin-bottom: 8px;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            color: #FBFBFB;
+            line-height: 1.5;
+        }
+
+        /* Reviews Section */
+        .reviews-section {
+            padding: 80px 0;
+            background: #0A0A0F;
+        }
+
+        .reviews-section .section-title {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .reviews-section .section-title span {
+            color: #0400FF;
+        }
+
+        .reviews-section .section-subtitle {
+            text-align: center;
+            font-size: 24px;
+            color: #FBFBFB;
+            margin-bottom: 48px;
+            max-width: 913px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .reviews-carousel {
+            position: relative;
+            max-width: 373px;
+            height: 809px;
+            margin: 0 auto;
+        }
+
+        .review-screenshot {
+            width: 373px;
+            height: 809px;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        .carousel-dot.active {
+            background: #007AFF;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 22px;
+            color: #007AFF;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .carousel-nav.prev {
+            left: -100px;
+        }
+
+        .carousel-nav.next {
+            right: -100px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                        alt="AI.BOOST Logo" class="logo-img">
+                </a>
+                <span class="santa-hat">🎅</span>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="about.html" class="nav-link active">О нас</a>
+                <a href="signal.html" class="nav-link">Сигнал</a>
+                <a href="#" class="nav-link">История сделок</a>
+                <a href="#instructions" class="nav-link">Инструкция</a>
+            </nav>
+            <div class="header-actions">
+                <button class="lang-btn">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F06bce085-a175-41db-be61-2172833b6876.png"
+                        alt="RU" class="lang-icon">
+                    <span>RU</span>
+                </button>
+                <button class="icon-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
+                    </svg>
+                </button>
+                <button class="icon-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <h1>О нас</h1>
+    </section>
+
+    <!-- Description Section -->
+    <section class="about-description">
+        <div class="container">
+            <div class="about-description-text">
+                <h2>Мы помогаем трейдерам достигать финансовой свободы</h2>
+                <p>Мы созданы для того, чтобы сделать трейдинг доступным, понятным и выгодным для всех. Наша команда
+                    объединяет экспертов в области финансов, технологий и аналитики, чтобы вы могли получить наилучший
+                    результат.</p>
+            </div>
+            <div class="about-description-image">
+                <img src="https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2Fd661e27ee4b1f1b2a1583c2be13a23e6a3be5155charts.png?alt=media&token=8117680c-7b11-465b-9c74-b9d9d8ffb6ed"
+                    alt="Charts">
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="container">
+            <h2 class="section-title">Наша <span>команда</span></h2>
+            <p class="section-subtitle">Команда, которая работает для вас</p>
+            <div class="team-grid">
+                <!-- 23 - CEO -->
+                <div class="team-card">
+                    <div class="team-card-inner">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2Ffbebed151f8a7e77dfd42da218526412917f84ab23.png?alt=media&token=7f65123e-6715-426b-8f72-fc2e8bd87b0a"
+                            alt="23" class="team-card-photo">
+                        <span class="team-card-name">23</span>
+                        <span class="team-card-role">Основатель и CEO</span>
+                    </div>
+                </div>
+                <!-- Игорь - Разработчик -->
+                <div class="team-card">
+                    <div class="team-card-inner">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2Fe46c571dcb846ce0ada3d39885371397c62c2632%D0%98%D0%B3%D0%BE%D1%80%D1%8C.png?alt=media&token=02fb8bb5-3080-4859-9c6d-490a07fa69c9"
+                            alt="Игорь" class="team-card-photo">
+                        <span class="team-card-name">Игорь</span>
+                        <span class="team-card-role">Разработчик</span>
+                    </div>
+                </div>
+                <!-- София - Менеджер поддержки -->
+                <div class="team-card">
+                    <div class="team-card-inner">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2F9cd5c7e99b6a05331ba17bf52bfc8522a3c37e38%D0%A1%D0%BE%D1%84%D0%B8%D1%8F.png?alt=media&token=2e37f4c1-2a7a-4c18-93c1-5343908f25e3"
+                            alt="София" class="team-card-photo">
+                        <span class="team-card-name">София</span>
+                        <span class="team-card-role">Менеджер поддержки</span>
+                    </div>
+                </div>
+                <!-- Денис - AI разработчик -->
+                <div class="team-card">
+                    <div class="team-card-inner">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2F83d9b8108de6088a80546b32e1d53995150ab794%D0%94%D0%B5%D0%BD%D0%B8%D1%81.png?alt=media&token=fd48cf81-633b-4f12-90a4-916bd385d3a6"
+                            alt="Денис" class="team-card-photo">
+                        <span class="team-card-name">Денис</span>
+                        <span class="team-card-role">AI разработчик</span>
+                    </div>
+                </div>
+                <!-- Дмитрий - Старший разработчик -->
+                <div class="team-card">
+                    <div class="team-card-inner">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2Fb61fd8ae1680908c1508cdf397fd62fcc906cf08%D0%94%D0%BC%D0%B8%D1%82%D1%80%D0%B8%D0%B9.png?alt=media&token=ae8fc676-231f-4916-9437-c75951c7ebea"
+                            alt="Дмитрий" class="team-card-photo">
+                        <span class="team-card-name">Дмитрий</span>
+                        <span class="team-card-role">Старший разработчик</span>
+                    </div>
+                </div>
+                <!-- Анна - Менеджер поддержки -->
+                <div class="team-card">
+                    <div class="team-card-inner">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2Fb963bb0df8680a0cf93c244d98aa84ef1b939309%D0%90%D0%BD%D0%BD%D0%B0.png?alt=media&token=47207f50-cbf5-4fa9-bc80-efabc489d91c"
+                            alt="Анна" class="team-card-photo">
+                        <span class="team-card-name">Анна</span>
+                        <span class="team-card-role">Менеджер поддержки</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container stats-container">
+            <div class="stats-left">
+                <h2>Наши <span>достижения</span> в цифрах</h2>
+                <p>Мы верим, что с правильными сигналами, данными и знаниями каждый может стать успешным трейдером.</p>
+            </div>
+            <div class="stats-right">
+                <div class="stat-item">
+                    <div class="stat-number">8000+</div>
+                    <div class="stat-desc">удовлетворенных<br>пользователей по всему<br>миру</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">25 стран</div>
+                    <div class="stat-desc">трейдеры доверяют нам в<br>каждом уголке мира</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">87%</div>
+                    <div class="stat-desc">точность наших сигналов</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="reviews-section">
+        <div class="container">
+            <h2 class="section-title"><span>Отзывы</span> о нас</h2>
+            <p class="section-subtitle">Мы всегда стремимся к высочайшим стандартам качества и поддерживаем наших
+                клиентов на каждом шагу</p>
+            <div class="reviews-carousel">
+                <span class="carousel-nav prev" onclick="prevReview()">‹</span>
+                <img src="https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2F90cb479cdb1b4e534bb1ad3a39b7ff39607bce9bchat%20screenshot.png?alt=media&token=b506741e-4939-4e89-a163-df38c30926bc"
+                    alt="Review" class="review-screenshot" id="reviewImage">
+                <span class="carousel-nav next" onclick="nextReview()">›</span>
+            </div>
+            <div class="carousel-dots">
+                <span class="carousel-dot" onclick="goToReview(0)"></span>
+                <span class="carousel-dot" onclick="goToReview(1)"></span>
+                <span class="carousel-dot active" onclick="goToReview(2)"></span>
+                <span class="carousel-dot" onclick="goToReview(3)"></span>
+                <span class="carousel-dot" onclick="goToReview(4)"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" style="position: relative; padding: 80px 0; background: #0A0A0F; overflow: hidden;">
+        <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F46ce0a3b-632e-4dda-97ea-fba8a0f6a030.png"
+            alt=""
+            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: auto;">
+        <div class="container" style="position: relative; z-index: 1; text-align: center;">
+            <p style="font-size: 24px; color: #FBFBFB; line-height: 1.5;">
+                Есть торговая идея? Начните реализовывать<br>её с нами уже сегодня!
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" style="padding: 60px 0 40px; background: #0A0A0F;">
+        <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
+            <div class="footer-logo">
+                <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                    alt="AI.BOOST Logo" style="height: 55px;">
+            </div>
+            <div style="text-align: center; color: #C4C4C4; font-size: 12px; line-height: 1.8;">
+                <p style="margin: 0;">Copyright © 2026 AI.BOOST | Все права защищены | <a href="#"
+                        style="color: #B4B9C9; text-decoration: none;">Telegram support</a> |</p>
+                <p style="margin: 8px 0 0;">
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Условия и положения</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика конфиденциальности</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика файлов куки</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Reviews carousel
+        const reviews = [
+            'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2F6cb34e97160cd84b23688b75696e649b37310240chat%20screenshot.png?alt=media&token=0ad6d1b9-dcdb-4b34-bb02-8884de06a7ad',
+            'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2F5047499dac5f44fe54cf005e3ca40c4f1bf6828fchat%20screenshot.png?alt=media&token=229736ed-8780-46e2-9273-8357af0e637f',
+            'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2F90cb479cdb1b4e534bb1ad3a39b7ff39607bce9bchat%20screenshot.png?alt=media&token=b506741e-4939-4e89-a163-df38c30926bc',
+            'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2Fb4254c0af81046a7be9baec679ed76bf21113fe3chat%20screenshot.png?alt=media&token=0f3ef2fc-5b5c-44b3-a684-05d7334d72d4',
+            'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2Fb41a63b01038bbda9ed9cc912483b4f422f7e0fachat%20screenshot.png?alt=media&token=a54d55ac-c545-47ec-8fba-fa39df5f2e36'
+        ];
+        let currentReview = 2;
+
+        function updateReview() {
+            document.getElementById('reviewImage').src = reviews[currentReview];
+            document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentReview);
+            });
+        }
+
+        function prevReview() {
+            currentReview = (currentReview - 1 + reviews.length) % reviews.length;
+            updateReview();
+        }
+
+        function nextReview() {
+            currentReview = (currentReview + 1) % reviews.length;
+            updateReview();
+        }
+
+        function goToReview(index) {
+            currentReview = index;
+            updateReview();
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+
+</html>

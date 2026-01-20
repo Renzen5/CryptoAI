@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сигнал - AI.BOOST</title>
+    <meta name="description" content="Торговые сигналы AI.BOOST - ваш путь к успешной торговле криптовалютой">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Signal Page Specific Styles */
+        .signal-page {
+            min-height: 100vh;
+            background: #0a0a0f;
+        }
+
+        .market-status-section {
+            padding: 80px 0 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .market-status-card {
+            width: 100%;
+            max-width: 700px;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(90deg, #0A7CFF 0%, #0A7CFF 30%, transparent 100%);
+        }
+
+        .market-status-inner {
+            background: #14131D;
+            border-radius: 18px;
+            padding: 30px 40px 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .market-status-title {
+            font-size: 34px;
+            color: #FBFBFB;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .market-status-time {
+            font-size: 24px;
+            color: #FBFBFB;
+            line-height: 1.4;
+            font-weight: 400;
+            margin: 0;
+        }
+
+        .btn-home {
+            display: inline-block;
+            padding: 12px 32px;
+            background: linear-gradient(90deg, #0400FF 2%, #06124A 42%, #3F3579 86%);
+            border-radius: 50px;
+            color: #FBFBFB;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(10, 124, 255, 0.3);
+        }
+
+        .signal-faq-section {
+            padding: 60px 0;
+        }
+
+        .signal-faq-title {
+            font-size: 50px;
+            font-weight: 600;
+            color: #FBFBFB;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .signal-faq-subtitle {
+            font-size: 24px;
+            color: #FBFBFB;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .signal-faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 1244px;
+            margin: 0 auto;
+        }
+
+        .signal-faq-item {
+            padding: 2px;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #0A7CFF, transparent);
+        }
+
+        .signal-faq-item-inner {
+            background: #14131D;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .signal-faq-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .signal-faq-header:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .signal-faq-question {
+            font-size: 22px;
+            font-weight: 600;
+            color: #FBFBFB;
+        }
+
+        .signal-faq-icon {
+            font-size: 24px;
+            font-weight: 300;
+            color: #FBFBFB;
+            transition: transform 0.3s;
+            line-height: 1;
+        }
+
+        .signal-faq-item.active .signal-faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .signal-faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .signal-faq-item.active .signal-faq-answer {
+            max-height: 200px;
+            padding: 0 24px 24px;
+        }
+
+        .signal-faq-answer p {
+            font-size: 16px;
+            color: #FBFBFB;
+            line-height: 1.6;
+        }
+
+        /* CTA Section for Signal Page */
+        .signal-cta-section {
+            position: relative;
+            padding: 50px 0;
+            overflow: hidden;
+        }
+
+        .signal-cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.5;
+        }
+
+        .signal-cta-card {
+            position: relative;
+            z-index: 2;
+            max-width: 572px;
+            margin: 0 auto;
+            background: #101010;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .signal-cta-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #FBFBFB;
+            line-height: 1.5;
+        }
+
+        /* Active nav link style */
+        .nav-link.active {
+            color: #0B6EE1;
+        }
+    </style>
+</head>
+
+<body class="signal-page">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F75ec6397-5420-48de-aac5-894a98d115c6.png"
+                    alt="AI.BOOST Logo" class="logo-img">
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="index.html#about" class="nav-link">О нас</a>
+                <a href="signal.html" class="nav-link active">Сигнал</a>
+                <a href="#" class="nav-link">История сделок</a>
+                <a href="index.html#instructions" class="nav-link">Инструкция</a>
+            </nav>
+            <div class="header-actions">
+                <button class="lang-btn">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F356c0d02-8dc3-4f23-9d4c-9c3e9a1f4b87.png"
+                        alt="RU" class="lang-icon">
+                    <span>RU</span>
+                </button>
+                <button class="icon-btn">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fd142955c-9bac-4f92-a3e7-1dccd050ad2f.png"
+                        alt="User" width="20" height="20">
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Market Status Section -->
+    <section class="market-status-section">
+        <div class="container">
+            <div class="market-status-card">
+                <div class="market-status-inner">
+                    <h1 class="market-status-title">Рынки закрыты</h1>
+                    <p class="market-status-time">Рабочее время:<br>Пн-Пт с 7:00 до 21:00</p>
+                    <a href="index.html" class="btn-home">На главную</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="signal-faq-section">
+        <div class="container">
+            <h2 class="signal-faq-title">Часто задаваемые вопросы</h2>
+            <p class="signal-faq-subtitle">Все, что вам нужно знать для успешного старта</p>
+
+            <div class="signal-faq-list">
+                <!-- FAQ Item 1 - Expanded -->
+                <div class="signal-faq-item active">
+                    <div class="signal-faq-item-inner">
+                        <div class="signal-faq-header">
+                            <span class="signal-faq-question">Как начать торговлю на вашей платформе?</span>
+                            <span class="signal-faq-icon">+</span>
+                        </div>
+                        <div class="signal-faq-answer">
+                            <p>Чтобы начать, зарегистрируйте аккаунт, пополните свой счет и выберите инструменты для
+                                торговли. После этого вы готовы к первым сделкам.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="signal-faq-item">
+                    <div class="signal-faq-item-inner">
+                        <div class="signal-faq-header">
+                            <span class="signal-faq-question">Нужно ли иметь опыт для торговли?</span>
+                            <span class="signal-faq-icon">+</span>
+                        </div>
+                        <div class="signal-faq-answer">
+                            <p>Нет, наша платформа подходит как для новичков, так и для опытных трейдеров. Мы
+                                предоставляем обучающие материалы и поддержку для всех уровней.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="signal-faq-item">
+                    <div class="signal-faq-item-inner">
+                        <div class="signal-faq-header">
+                            <span class="signal-faq-question">Что такое торговые сигналы и как ими пользоваться?</span>
+                            <span class="signal-faq-icon">+</span>
+                        </div>
+                        <div class="signal-faq-answer">
+                            <p>Торговые сигналы — это рекомендации по покупке или продаже активов, основанные на
+                                техническом анализе. Следуйте нашим сигналам для принятия торговых решений.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="signal-faq-item">
+                    <div class="signal-faq-item-inner">
+                        <div class="signal-faq-header">
+                            <span class="signal-faq-question">Какие методы пополнения счета доступны?</span>
+                            <span class="signal-faq-icon">+</span>
+                        </div>
+                        <div class="signal-faq-answer">
+                            <p>Мы поддерживаем различные методы пополнения: банковские карты, криптовалюты, электронные
+                                кошельки и банковские переводы.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 5 -->
+                <div class="signal-faq-item">
+                    <div class="signal-faq-item-inner">
+                        <div class="signal-faq-header">
+                            <span class="signal-faq-question">Есть ли поддержка 24/7?</span>
+                            <span class="signal-faq-icon">+</span>
+                        </div>
+                        <div class="signal-faq-answer">
+                            <p>Да, наша служба поддержки работает круглосуточно. Вы можете связаться с нами через
+                                Telegram или электронную почту в любое время.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="signal-cta-section">
+        <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F21fd1579-4ccd-4d19-83f6-1f49b1ea1f86.png"
+            alt="" class="signal-cta-bg">
+        <div class="signal-cta-card">
+            <p class="signal-cta-text">Есть торговая идея? Начните реализовывать<br>её с нами уже сегодня!</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p class="copyright">Copyright © 2026 AI.BOOST | Все права защищены</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Условия и положения</a>
+                <span class="footer-divider">|</span>
+                <a href="#" class="footer-link">Политика файлов куки</a>
+                <span class="footer-divider">|</span>
+                <a href="#" class="footer-link">Политика конфиденциальности</a>
+                <span class="footer-divider">|</span>
+                <a href="#" class="footer-link">Telegram support</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.signal-faq-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.closest('.signal-faq-item');
+                const wasActive = item.classList.contains('active');
+
+                // Close all items
+                document.querySelectorAll('.signal-faq-item').forEach(faqItem => {
+                    faqItem.classList.remove('active');
+                });
+
+                // Toggle current item
+                if (!wasActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(10, 10, 15, 0.98)';
+            } else {
+                header.style.background = 'rgba(10, 10, 15, 0.95)';
+            }
+        });
+    </script>
+</body>
+
+</html>
