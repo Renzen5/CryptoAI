@@ -1,9 +1,6 @@
 -- Telegram Whitelist Schema for AI.BOOST
 -- Run this in Supabase SQL Editor
 
--- Drop old auth if exists (we're replacing with Telegram)
--- Note: Keep profiles table but add telegram_id
-
 -- Telegram whitelist table
 CREATE TABLE IF NOT EXISTS telegram_whitelist (
   id BIGSERIAL PRIMARY KEY,
@@ -22,9 +19,25 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS telegram_id BIGINT UNIQUE;
 -- Enable RLS
 ALTER TABLE telegram_whitelist ENABLE ROW LEVEL SECURITY;
 
--- Allow authenticated users to read whitelist (for checking access)
+-- Policy: Anyone can read whitelist (for access check)
+DROP POLICY IF EXISTS "anon_can_read_whitelist" ON telegram_whitelist;
 CREATE POLICY "anon_can_read_whitelist" ON telegram_whitelist
   FOR SELECT USING (true);
+
+-- Policy: Allow INSERT for service role (bot uses service key)
+DROP POLICY IF EXISTS "service_can_insert_whitelist" ON telegram_whitelist;
+CREATE POLICY "service_can_insert_whitelist" ON telegram_whitelist
+  FOR INSERT WITH CHECK (true);
+
+-- Policy: Allow UPDATE for service role
+DROP POLICY IF EXISTS "service_can_update_whitelist" ON telegram_whitelist;
+CREATE POLICY "service_can_update_whitelist" ON telegram_whitelist
+  FOR UPDATE USING (true);
+
+-- Policy: Allow DELETE for service role  
+DROP POLICY IF EXISTS "service_can_delete_whitelist" ON telegram_whitelist;
+CREATE POLICY "service_can_delete_whitelist" ON telegram_whitelist
+  FOR DELETE USING (true);
 
 -- Create index for fast lookups
 CREATE INDEX IF NOT EXISTS idx_whitelist_telegram_id ON telegram_whitelist(telegram_id);
