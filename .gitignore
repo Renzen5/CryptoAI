@@ -1,8 +1,6 @@
 # Dependencies
 node_modules/
 
-# Configuration with secrets
-config.js
 
 # Environment files
 .env
