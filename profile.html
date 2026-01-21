@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - AI.BOOST</title>
+    <meta name="description" content="Настройки профиля пользователя AI.BOOST">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
+    <style>
+        /* Profile Page Specific Styles */
+        .profile-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background: linear-gradient(180deg, #0A0A0F 0%, #1a1a3e 50%, #0A0A0F 100%);
+        }
+
+        .profile-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(2px 2px at 20px 30px, white, rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 40px 70px, white, rgba(0, 0, 0, 0)),
+                radial-gradient(1px 1px at 90px 40px, white, rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 130px 80px, white, rgba(0, 0, 0, 0)),
+                radial-gradient(1px 1px at 160px 120px, white, rgba(0, 0, 0, 0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.3;
+        }
+
+        .profile-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 20px 60px;
+        }
+
+        .profile-card {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(20, 19, 29, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #FBFBFB;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .profile-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #FBFBFB;
+            margin-bottom: 4px;
+        }
+
+        .section-status {
+            font-size: 12px;
+            color: #00C853;
+            margin-bottom: 12px;
+        }
+
+        .section-status.inactive {
+            color: #FF5252;
+        }
+
+        .email-display {
+            width: 100%;
+            padding: 12px 16px;
+            background: #FBFBFB;
+            border: none;
+            border-radius: 8px;
+            color: #0A0A0F;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .password-hint {
+            font-size: 12px;
+            color: #FF5252;
+            margin-bottom: 16px;
+        }
+
+        .btn-change-password {
+            background: linear-gradient(90deg, #0400FF 2%, #06124A 42%, #3F3579 86%);
+            color: #FBFBFB;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-change-password:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(10, 124, 255, 0.3);
+        }
+
+        .logout-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #FBFBFB;
+            font-size: 14px;
+            margin-top: 24px;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .logout-link:hover {
+            opacity: 0.7;
+        }
+
+        .logout-link svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Profile Footer */
+        .profile-footer {
+            background: #0A0A0F;
+            padding: 40px 0 30px;
+            text-align: center;
+        }
+
+        .profile-footer .footer-logo img {
+            height: 40px;
+            margin-bottom: 20px;
+        }
+
+        .profile-footer .copyright {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .profile-footer .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .profile-footer .footer-link {
+            color: #0A7CFF;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .profile-footer .footer-divider {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-content {
+                padding: 100px 20px 40px;
+            }
+
+            .profile-card {
+                padding: 30px 24px;
+            }
+
+            .profile-title {
+                font-size: 24px;
+            }
+
+            .profile-footer .footer-links {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .profile-footer .footer-divider {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="profile-page">
+    <div class="profile-bg"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                        alt="AI.BOOST Logo" class="logo-img">
+                </a>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="about.html" class="nav-link">О нас</a>
+                <a href="signal.html" class="nav-link auth-only">Сигнал</a>
+                <a href="history.html" class="nav-link auth-only">История сделок</a>
+                <a href="instructions.html" class="nav-link">Инструкция</a>
+            </nav>
+            <div class="header-actions">
+                <button class="lang-btn">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F06bce085-a175-41db-be61-2172833b6876.png"
+                        alt="RU" class="lang-icon">
+                    <span>RU</span>
+                </button>
+                <a href="register.html" class="btn btn-primary guest-only">Регистрация</a>
+                <a href="profile.html" class="icon-btn user-btn auth-only">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbfbfb" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </a>
+                <button class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Profile Content -->
+    <main class="profile-content">
+        <div class="profile-card">
+            <h1 class="profile-title">Настройки профиля</h1>
+
+            <div class="profile-section">
+                <div class="section-label">Электронная почта</div>
+                <div class="section-status">Почта активирована</div>
+                <input type="email" class="email-display" id="userEmail" readonly>
+            </div>
+
+            <div class="profile-section">
+                <div class="section-label">Пароль</div>
+                <div class="password-hint">Для повышения безопасности аккаунта, меняйте пароль не реже чем раз в месяц
+                </div>
+                <button class="btn-change-password" onclick="changePassword()">Поменять пароль</button>
+            </div>
+
+            <div class="logout-link" onclick="logout()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Выйти из аккаунта</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" style="padding: 60px 0 40px; background: #0A0A0F;">
+        <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
+            <div class="footer-logo">
+                <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                    alt="AI.BOOST Logo" style="height: 55px;">
+            </div>
+            <div style="text-align: center; color: #C4C4C4; font-size: 12px; line-height: 1.8;">
+                <p style="margin: 0;">Copyright © 2026 AI.BOOST | Все права защищены | <a href="https://t.me/aiboostapp"
+                        style="color: #B4B9C9; text-decoration: none;">Telegram support</a> |</p>
+                <p style="margin: 8px 0 0;">
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Условия и положения</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика конфиденциальности</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика файлов куки</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const nav = document.querySelector('.nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (nav && menuToggle) {
+                nav.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            }
+        }
+
+        // Protect page
+        Auth.protectPage();
+
+        // Load user email
+        document.addEventListener('DOMContentLoaded', async function () {
+            const user = await Auth.getCurrentUser();
+            if (user && user.email) {
+                document.getElementById('userEmail').value = user.email;
+            }
+        });
+
+        // Change password
+        function changePassword() {
+            alert('Функция смены пароля (Демо)');
+        }
+
+        // Logout
+        async function logout() {
+            await Auth.signOut();
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(10, 10, 15, 0.98)';
+            } else {
+                header.style.background = 'rgba(10, 10, 15, 0.95)';
+            }
+        });
+    </script>
+</body>
+
+</html>

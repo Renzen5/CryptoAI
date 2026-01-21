@@ -10,6 +10,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
     <style>
         /* About Page Specific Styles */
         .about-hero {
@@ -529,9 +533,9 @@
             <nav class="nav">
                 <a href="index.html" class="nav-link">Главная</a>
                 <a href="about.html" class="nav-link active">О нас</a>
-                <a href="signal.html" class="nav-link">Сигнал</a>
-                <a href="#" class="nav-link">История сделок</a>
-                <a href="#instructions" class="nav-link">Инструкция</a>
+                <a href="signal.html" class="nav-link auth-only">Сигнал</a>
+                <a href="history.html" class="nav-link auth-only">История сделок</a>
+                <a href="instructions.html" class="nav-link">Инструкция</a>
             </nav>
             <div class="header-actions">
                 <button class="lang-btn">
@@ -539,12 +543,13 @@
                         alt="RU" class="lang-icon">
                     <span>RU</span>
                 </button>
-                <button class="icon-btn">
+                <a href="register.html" class="btn btn-primary guest-only">Регистрация</a>
+                <a href="profile.html" class="icon-btn user-btn auth-only">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbfbfb" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
-                </button>
+                </a>
                 <button class="menu-toggle" onclick="toggleMenu()">
                     <span></span>
                     <span></span>
@@ -663,27 +668,7 @@
         </div>
     </section>
 
-    <!-- Reviews Section -->
-    <section class="reviews-section">
-        <div class="container">
-            <h2 class="section-title"><span>Отзывы</span> о нас</h2>
-            <p class="section-subtitle">Мы всегда стремимся к высочайшим стандартам качества и поддерживаем наших
-                клиентов на каждом шагу</p>
-            <div class="reviews-carousel">
-                <span class="carousel-nav prev" onclick="prevReview()">‹</span>
-                <img src="https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2F90cb479cdb1b4e534bb1ad3a39b7ff39607bce9bchat%20screenshot.png?alt=media&token=b506741e-4939-4e89-a163-df38c30926bc"
-                    alt="Review" class="review-screenshot" id="reviewImage">
-                <span class="carousel-nav next" onclick="nextReview()">›</span>
-            </div>
-            <div class="carousel-dots">
-                <span class="carousel-dot" onclick="goToReview(0)"></span>
-                <span class="carousel-dot" onclick="goToReview(1)"></span>
-                <span class="carousel-dot active" onclick="goToReview(2)"></span>
-                <span class="carousel-dot" onclick="goToReview(3)"></span>
-                <span class="carousel-dot" onclick="goToReview(4)"></span>
-            </div>
-        </div>
-    </section>
+
 
     <!-- CTA Section -->
     <section class="cta-section" style="position: relative; padding: 80px 0; background: #0A0A0F; overflow: hidden;">
@@ -769,6 +754,7 @@
             }
         });
     </script>
+    <script src="auth.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Верификация - AI.BOOST</title>
+    <meta name="description" content="Подтвердите регистрацию в AI.BOOST">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
+    <style>
+        /* Verification Page Styles */
+        .verification-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            color: #FBFBFB;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .verification-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background: linear-gradient(180deg, #0A0A0F 0%, #1a1a3e 50%, #0A0A0F 100%);
+        }
+
+        .verification-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(2px 2px at 20px 30px, white, rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 40px 70px, white, rgba(0, 0, 0, 0)),
+                radial-gradient(1px 1px at 90px 40px, white, rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 130px 80px, white, rgba(0, 0, 0, 0)),
+                radial-gradient(1px 1px at 160px 120px, white, rgba(0, 0, 0, 0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.3;
+        }
+
+        .verification-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .verification-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(90deg, #FBFBFB 0%, #A0A0A0 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .verification-text {
+            font-size: 16px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 32px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-pocket {
+            display: inline-block;
+            width: 100%;
+            max-width: 400px;
+            padding: 18px;
+            background: linear-gradient(90deg, #001AFF 0%, #0A0A50 100%);
+            border: none;
+            border-radius: 30px;
+            color: #FBFBFB;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .btn-pocket:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 26, 255, 0.4);
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 24px;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .input-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .input-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #FBFBFB;
+        }
+
+        .id-help-link {
+            font-size: 14px;
+            color: #001AFF;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .id-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: #FBFBFB;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            color: #0A0A0F;
+            outline: none;
+        }
+
+        .id-input::placeholder {
+            color: #888;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .btn-create-account {
+            width: 100%;
+            max-width: 500px;
+            padding: 18px;
+            background: linear-gradient(90deg, #001AFF 0%, #0A0A50 100%);
+            border: none;
+            border-radius: 30px;
+            color: #FBFBFB;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-create-account:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            width: 100%;
+            max-width: 500px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            color: #FBFBFB;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .info-cards {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .info-card {
+            flex: 1;
+            background: rgba(10, 10, 20, 0.8);
+            border: 1px solid rgba(66, 133, 244, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+            max-width: 350px;
+        }
+
+        .info-card:hover {
+            border-color: #0A7CFF;
+        }
+
+        .info-card-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 12px;
+            opacity: 0.7;
+        }
+
+        .info-card-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            .info-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .info-card {
+                width: 100%;
+            }
+
+            .verification-title {
+                font-size: 36px;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #14131D;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #FBFBFB;
+        }
+
+        .modal-close svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .modal-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #FBFBFB;
+            margin: 20px 0 10px;
+        }
+    </style>
+</head>
+
+<body class="verification-page">
+    <div class="verification-bg"></div>
+
+    <div class="verification-container">
+        <h1 class="verification-title">Почти готово!</h1>
+        <p class="verification-text">
+            Чтобы завершить регистрацию и начать получать сигналы, выберите брокера,
+            зарегистрируйте аккаунт по ссыке ниже и отправьте свой ID
+        </p>
+
+        <a href="https://m.pocketoption.com/ru/register?utm_campaign=810806&utm_source=affiliate&utm_medium=sr&a=I4fJBz7sqi19db&ac=7777&code=BONUS911"
+            target="_blank" class="btn-pocket">
+            Зарегистрироваться на POCKET
+        </a>
+
+        <div class="input-group">
+            <div class="input-label-row">
+                <span class="input-label">Введите свой ID аккаунта*</span>
+                <a href="#" class="id-help-link">Где найти ID?</a>
+            </div>
+            <input type="text" class="id-input" id="accountId" placeholder="ID">
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-create-account" onclick="completeVerification()">Создать аккаунт</button>
+            <button class="btn-logout" onclick="logout()">Выйти из аккаунта</button>
+        </div>
+
+        <div class="info-cards">
+            <div class="info-card" id="cardWhyId">
+                <div class="info-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                </div>
+                <span class="info-card-text">Зачем вам мой ID?</span>
+            </div>
+            <div class="info-card" id="cardExistingAccount">
+                <div class="info-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <span class="info-card-text">У меня уже есть аккаунт на брокере POCKET</span>
+            </div>
+        </div>
+
+        <!-- ID Help Modal -->
+        <div class="modal" id="idHelpModal">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <p class="modal-text">
+                    Чтобы получить ваш ID, нужно зарегистрироваться у брокера. После регистрации вы сможете найти свой
+                    ID в
+                    личном кабинете
+                </p>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer class="footer" style="padding: 60px 0 40px; background: #0A0A0F;">
+            <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
+                <div class="footer-logo">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                        alt="AI.BOOST Logo" style="height: 55px;">
+                </div>
+                <div style="text-align: center; color: #C4C4C4; font-size: 12px; line-height: 1.8;">
+                    <p style="margin: 0;">Copyright © 2026 AI.BOOST | Все права защищены | <a
+                            href="https://t.me/aiboostapp" style="color: #B4B9C9; text-decoration: none;">Telegram
+                            support</a> |</p>
+                    <p style="margin: 8px 0 0;">
+                        <a href="#" style="color: #B4B9C9; text-decoration: underline;">Условия и положения</a> |
+                        <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика конфиденциальности</a>
+                        |
+                        <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика файлов куки</a>
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Check access immediately
+        Auth.checkVerificationAccess();
+
+        // Modal Logic
+        const modal = document.getElementById('idHelpModal');
+        const modalText = document.querySelector('.modal-text');
+
+        // Modal Content Data
+        const contentData = {
+            help: 'Чтобы получить ваш ID, нужно зарегистрироваться у брокера. После регистрации вы сможете найти свой ID в личном кабинете',
+            why: 'Мы сотрудничаем с брокером по реферальной системе, чтобы предоставлять сигналы бесплатно для пользователей. Наш доход формируется за счет реферальной программы брокера POCKET, который выплачивает нам 2% от годового оборота успешных сделок пользователей. При этом пользователи ничего не теряют — комиссия зачисляется со стороны брокера, а не из средств пользователей. Такой подход позволяет нам сохранять сервис бесплатным и поддерживать его качество на высоком уровне.',
+            exists: 'Если у вас уже есть аккаунт на брокере POCKET без реферальной системы, вам нужно создать новый по нашей ссылке, иначе вы не сможете пользоваться этим сервисом.'
+        };
+
+        // Open Modal Function
+        function openModal(type) {
+            modalText.textContent = contentData[type];
+            modal.classList.add('active');
+        }
+
+        // Event Listeners
+        document.querySelector('.id-help-link').addEventListener('click', function (e) {
+            e.preventDefault();
+            openModal('help');
+        });
+
+        document.getElementById('cardWhyId').addEventListener('click', function () {
+            openModal('why');
+        });
+
+        document.getElementById('cardExistingAccount').addEventListener('click', function () {
+            openModal('exists');
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // Close modal on outside click
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        async function completeVerification() {
+            const idInput = document.getElementById('accountId');
+            const id = idInput.value.trim();
+
+            if (!id) {
+                alert('Пожалуйста, введите ID вашего аккаунта');
+                return;
+            }
+
+            const result = await Auth.verify(id);
+            if (result.success) {
+                window.location.href = 'index.html';
+            } else {
+                alert('Ошибка верификации: ' + (result.error || 'Неизвестная ошибка'));
+            }
+        }
+
+        async function logout() {
+            await Auth.signOut();
+        }
+    </script>
+</body>
+
+</html>

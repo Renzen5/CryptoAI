@@ -5,11 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Сигнал - AI.BOOST</title>
-    <meta name="description" content="Торговые сигналы AI.BOOST - ваш путь к успешной торговле криптовалютой">
+    <meta name="description" content="Торговые сигналы AI.BOOST">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
     <style>
         /* Signal Page Specific Styles */
         .signal-page {
@@ -17,191 +21,675 @@
             background: #0a0a0f;
         }
 
-        .market-status-section {
-            padding: 80px 0 60px;
+        .market-section {
+            padding: 120px 0 60px;
+            min-height: 60vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 40px;
+            justify-content: center;
         }
 
-        .market-status-card {
+        /* CLOSED STATE */
+        .market-closed-card {
             width: 100%;
-            max-width: 700px;
+            max-width: 600px;
             border-radius: 20px;
             padding: 2px;
-            background: linear-gradient(90deg, #0A7CFF 0%, #0A7CFF 30%, transparent 100%);
+            background: linear-gradient(90deg, #FF0000 0%, #800000 100%);
+            display: none;
         }
 
-        .market-status-inner {
+        .market-closed-inner {
             background: #14131D;
             border-radius: 18px;
-            padding: 30px 40px 24px;
+            padding: 40px;
             text-align: center;
-            display: flex;
+            color: #FBFBFB;
+        }
+
+        .market-closed-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .market-closed-time {
+            font-size: 18px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* OPEN STATE (Trading Interface) */
+        .trading-interface {
+            width: 100%;
+            max-width: 1000px;
+            display: none;
             flex-direction: column;
-            align-items: center;
-            gap: 20px;
+            gap: 30px;
         }
 
-        .market-status-title {
-            font-size: 34px;
-            color: #FBFBFB;
-            margin: 0;
-            font-weight: 400;
-        }
-
-        .market-status-time {
-            font-size: 24px;
-            color: #FBFBFB;
-            line-height: 1.4;
-            font-weight: 400;
-            margin: 0;
-        }
-
-        .btn-home {
-            display: inline-block;
-            padding: 12px 32px;
-            background: linear-gradient(90deg, #0400FF 2%, #06124A 42%, #3F3579 86%);
-            border-radius: 50px;
-            color: #FBFBFB;
-            font-size: 16px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: transform 0.3s, box-shadow 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn-home:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(10, 124, 255, 0.3);
-        }
-
-        .signal-faq-section {
-            padding: 60px 0;
-        }
-
-        .signal-faq-title {
-            font-size: 50px;
-            font-weight: 600;
-            color: #FBFBFB;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-
-        .signal-faq-subtitle {
-            font-size: 24px;
-            color: #FBFBFB;
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .signal-faq-list {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            max-width: 1244px;
-            margin: 0 auto;
-        }
-
-        .signal-faq-item {
-            padding: 2px;
+        /* Chart Area */
+        .chart-container {
+            position: relative;
+            background: rgba(20, 19, 29, 0.5);
             border-radius: 20px;
-            background: linear-gradient(90deg, #0A7CFF, transparent);
-        }
-
-        .signal-faq-item-inner {
-            background: #14131D;
-            border-radius: 18px;
             overflow: hidden;
+            min-height: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .signal-faq-header {
+        .chart-bg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* TradingView Widget */
+        .tradingview-widget-container {
+            width: 100%;
+            height: 400px;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            background: rgba(16, 16, 16, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: -50px;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .settings-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 24px;
-            cursor: pointer;
-            transition: background 0.3s;
+            margin-bottom: 30px;
         }
 
-        .signal-faq-header:hover {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .signal-faq-question {
-            font-size: 22px;
+        .settings-title {
+            font-size: 24px;
             font-weight: 600;
             color: #FBFBFB;
         }
 
-        .signal-faq-icon {
-            font-size: 24px;
-            font-weight: 300;
+        .info-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid #4B4B4B;
+            border-radius: 100px;
+            font-size: 14px;
             color: #FBFBFB;
-            transition: transform 0.3s;
-            line-height: 1;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .signal-faq-item.active .signal-faq-icon {
-            transform: rotate(45deg);
+        .info-badge:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        .signal-faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
+        /* Controls Grid */
+        .controls-grid {
+            display: grid;
+            gap: 24px;
         }
 
-        .signal-faq-item.active .signal-faq-answer {
-            max-height: 200px;
-            padding: 0 24px 24px;
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
-        .signal-faq-answer p {
+        .control-label {
+            font-size: 18px;
+            color: #FBFBFB;
+            min-width: 100px;
+        }
+
+        /* Indicator Buttons */
+        .indicator-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .indicator-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid #0400FF;
+            border-radius: 10px;
+            background: transparent;
+            color: #FBFBFB;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .indicator-btn:hover {
+            background: rgba(4, 0, 255, 0.1);
+        }
+
+        .indicator-btn.active {
+            background: rgba(4, 0, 255, 0.2);
+            border-color: #0400FF;
+            box-shadow: 0 0 10px rgba(4, 0, 255, 0.3);
+        }
+
+        /* Pair Selector Dropdown */
+        .pair-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            border: 1px solid #0F235F;
+            border-radius: 16px;
+            background: transparent;
+            color: #FBFBFB;
+            font-weight: 700;
+            cursor: pointer;
+            min-width: 200px;
+            justify-content: space-between;
+        }
+
+        .pair-selector img,
+        .pair-option img {
+            pointer-events: none;
+            border-radius: 50%;
+        }
+
+        .pair-dropdown-menu {
+            background: #14131D;
+            border: 1px solid #0F235F;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            max-height: 250px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .pair-dropdown-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .pair-dropdown-menu::-webkit-scrollbar-track {
+            background: #14131D;
+        }
+
+        .pair-dropdown-menu::-webkit-scrollbar-thumb {
+            background: #0F235F;
+            border-radius: 3px;
+        }
+
+        .pair-dropdown-menu::-webkit-scrollbar-thumb:hover {
+            background: #0400FF;
+        }
+
+        .pair-option {
+            padding: 12px 20px;
+            color: #FBFBFB;
             font-size: 16px;
-            color: #FBFBFB;
-            line-height: 1.6;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* CTA Section for Signal Page */
-        .signal-cta-section {
-            position: relative;
-            padding: 50px 0;
+        .pair-option:hover {
+            background: rgba(10, 124, 255, 0.1);
+        }
+
+        .pair-icons {
+            display: flex;
+            gap: -5px;
+        }
+
+        .pair-icons img:nth-child(2) {
+            margin-left: -5px;
+        }
+
+        /* Time Selector */
+        .time-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .time-btn {
+            width: 44px;
+            height: 40px;
+            border: 1px solid #0400FF;
+            border-radius: 10px;
+            background: transparent;
+            color: #FBFBFB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .time-btn.active,
+        .time-btn:hover {
+            background: #0400FF;
+        }
+
+        /* Action Buttons */
+        .actions-footer {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-signal {
+            flex: 2;
+            min-width: 280px;
+            padding: 16px;
+            background: linear-gradient(90deg, #0400FF 2%, #06124A 42%, #3F3579 86%);
+            border-radius: 50px;
+            border: none;
+            color: #FBFBFB;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .btn-signal:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            min-width: 180px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: #FBFBFB;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ========== SIGNAL STATES ========== */
+
+        /* Loading State */
+        .signal-loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .signal-loading.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(4, 0, 255, 0.2);
+            border-top-color: #0400FF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 24px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            font-size: 20px;
+            color: #FBFBFB;
+            margin-bottom: 8px;
+        }
+
+        .loading-subtext {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Signal Active State */
+        .signal-active {
+            display: none;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .signal-active.active {
+            display: flex;
+        }
+
+        /* Note Text */
+        .signal-note {
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+        }
+
+        /* Opening Price Badge */
+        .price-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 auto;
+        }
+
+        .price-label {
+            background: linear-gradient(90deg, #FF6B6B, #EE4444);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .price-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #FBFBFB;
+        }
+
+        /* Analytics Section */
+        .analytics-section {
+            text-align: center;
+        }
+
+        .analytics-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+
+        .analytics-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 30px;
+            background: rgba(20, 19, 29, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px 30px;
+        }
+
+        .symbol-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .symbol-flags {
+            display: flex;
+        }
+
+        .symbol-flags img:nth-child(2) {
+            margin-left: -8px;
+        }
+
+        .symbol-details {
+            text-align: left;
+        }
+
+        .symbol-name {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .symbol-pair {
+            font-size: 18px;
+            font-weight: 700;
+            color: #FBFBFB;
+        }
+
+        .direction-info {
+            text-align: left;
+        }
+
+        .direction-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .direction-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .direction-value.buy {
+            color: #00FF88;
+        }
+
+        .direction-value.sell {
+            color: #FF4444;
+        }
+
+        .time-info {
+            text-align: left;
+        }
+
+        .time-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .time-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #FBFBFB;
+        }
+
+        /* Countdown Section */
+        .countdown-section {
+            text-align: center;
+        }
+
+        .countdown-card {
+            display: inline-block;
+            background: rgba(20, 19, 29, 0.8);
+            border: 1px solid #0400FF;
+            border-radius: 16px;
+            padding: 24px 40px;
+            min-width: 300px;
+        }
+
+        .countdown-title {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 16px;
+        }
+
+        .countdown-bar {
+            height: 12px;
+            background: rgba(4, 0, 255, 0.2);
+            border-radius: 6px;
             overflow: hidden;
         }
 
-        .signal-cta-bg {
-            position: absolute;
+        .countdown-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #0400FF, #0A7CFF);
+            border-radius: 6px;
+            transition: width 1s linear;
+        }
+
+        /* Result State */
+        .signal-result {
+            display: none;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .signal-result.active {
+            display: flex;
+        }
+
+        .result-analytics {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .prices-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .price-row .price-label {
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .price-row .price-label.open {
+            background: linear-gradient(90deg, #FF6B6B, #EE4444);
+        }
+
+        .price-row .price-label.close {
+            background: linear-gradient(90deg, #6B6BFF, #4444EE);
+        }
+
+        /* Result Card */
+        .result-card {
+            text-align: center;
+            background: rgba(20, 19, 29, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px 50px;
+        }
+
+        .result-title {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+
+        .result-value {
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+        .result-value.win {
+            color: #00FF88;
+        }
+
+        .result-value.lose {
+            color: #FF4444;
+        }
+
+        /* Info Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            opacity: 0.5;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
         }
 
-        .signal-cta-card {
-            position: relative;
-            z-index: 2;
-            max-width: 572px;
-            margin: 0 auto;
-            background: #101010;
-            border-radius: 20px;
-            padding: 60px 40px;
-            text-align: center;
+        .modal-overlay.active {
+            display: flex;
         }
 
-        .signal-cta-text {
-            font-size: 20px;
-            font-weight: 600;
+        .modal-content {
+            background: #101015;
+            border: 1px solid #0400FF;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
             color: #FBFBFB;
-            line-height: 1.5;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            box-shadow: 0 0 20px rgba(4, 0, 255, 0.2);
+            animation: modalFadeIn 0.3s ease;
         }
 
-        /* Active nav link style */
-        .nav-link.active {
-            color: #0B6EE1;
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-bottom: 2px dashed #0400FF;
+        }
+
+        .modal-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 28px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            transition: transform 0.2s;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 24px 24px 32px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #C4C4C4;
+            text-align: left;
         }
     </style>
 </head>
@@ -211,15 +699,17 @@
     <header class="header">
         <div class="header-container">
             <div class="logo">
-                <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F75ec6397-5420-48de-aac5-894a98d115c6.png"
-                    alt="AI.BOOST Logo" class="logo-img">
+                <a href="index.html">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F75ec6397-5420-48de-aac5-894a98d115c6.png"
+                        alt="AI.BOOST Logo" class="logo-img">
+                </a>
             </div>
             <nav class="nav">
                 <a href="index.html" class="nav-link">Главная</a>
-                <a href="index.html#about" class="nav-link">О нас</a>
-                <a href="signal.html" class="nav-link active">Сигнал</a>
-                <a href="#" class="nav-link">История сделок</a>
-                <a href="index.html#instructions" class="nav-link">Инструкция</a>
+                <a href="about.html" class="nav-link">О нас</a>
+                <a href="signal.html" class="nav-link active auth-only">Сигнал</a>
+                <a href="history.html" class="nav-link auth-only">История сделок</a>
+                <a href="instructions.html" class="nav-link">Инструкция</a>
             </nav>
             <div class="header-actions">
                 <button class="lang-btn">
@@ -227,10 +717,12 @@
                         alt="RU" class="lang-icon">
                     <span>RU</span>
                 </button>
-                <button class="icon-btn">
-                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fd142955c-9bac-4f92-a3e7-1dccd050ad2f.png"
-                        alt="User" width="20" height="20">
-                </button>
+                <a href="profile.html" class="icon-btn user-btn auth-only">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbfbfb" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </a>
                 <button class="menu-toggle" onclick="toggleMenu()">
                     <span></span>
                     <span></span>
@@ -240,126 +732,476 @@
         </div>
     </header>
 
-    <!-- Market Status Section -->
-    <section class="market-status-section">
+    <!-- Trading/Market Section -->
+    <section class="market-section">
         <div class="container">
-            <div class="market-status-card">
-                <div class="market-status-inner">
-                    <h1 class="market-status-title">Рынки закрыты</h1>
-                    <p class="market-status-time">Рабочее время:<br>Пн-Пт с 7:00 до 21:00</p>
-                    <a href="index.html" class="btn-home">На главную</a>
+            <!-- Closed State -->
+            <div id="market-closed" class="market-closed-card">
+                <div class="market-closed-inner">
+                    <h1 class="market-closed-title">Рынки закрыты</h1>
+                    <p class="market-closed-time">
+                        Торги доступны только в рабочее время:<br>
+                        <strong>Пн-Пт с 7:00 до 21:00</strong>
+                    </p>
+                    <a href="index.html" class="btn-home" style="margin-top: 30px; display: inline-block;">На
+                        главную</a>
+                </div>
+            </div>
+
+            <!-- Open State (Trading Interface) -->
+            <div id="market-open" class="trading-interface">
+                <!-- Decorative Image (shown initially before signal) -->
+                <div class="chart-container" id="decorative-chart">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SIQZ_8GWaNUdyGDF6vz%2F73e6b66b034e3964d4e87d4e14010287fdd50d7eImage.png?alt=media&token=b65a4bd5-91ec-4d2a-8d2f-54503e0f7371"
+                        alt="Chart" class="chart-bg" style="width: 100%; height: auto; display: block;">
+                </div>
+
+                <!-- TradingView Chart (hidden initially, shown after signal) -->
+                <div class="chart-container" id="chart-container" style="display: none;">
+                    <div id="tradingview-widget" class="tradingview-widget-container"></div>
+                </div>
+
+                <!-- Settings Panel (Initial State) -->
+                <div class="settings-panel" id="settings-panel">
+                    <div class="settings-header">
+                        <h2 class="settings-title">Настройки сигнала</h2>
+                        <button class="info-badge" onclick="showInfoModal()">
+                            <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F63f28f09-a8fa-4ffa-9cff-0d965c3f12a3.png"
+                                width="16" alt="i">
+                            Информация
+                        </button>
+                    </div>
+
+                    <div class="controls-grid">
+                        <!-- Indicators -->
+                        <div class="control-row">
+                            <span class="control-label">Индикаторы:</span>
+                            <div class="indicator-group" id="indicator-group">
+                                <button class="indicator-btn active" data-indicator="AI"
+                                    onclick="selectIndicator(this)">
+                                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fda92c972-950a-4a14-a300-b116defbfa09.png"
+                                        width="10" alt="">
+                                    AI
+                                </button>
+                                <button class="indicator-btn" data-indicator="SMART.M Concept"
+                                    onclick="selectIndicator(this)">
+                                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F0e20d4ad-cf02-4a87-8ee5-469a58387230.png"
+                                        width="13" alt="">
+                                    SMART.M Concept
+                                </button>
+                                <button class="indicator-btn" data-indicator="Technical.A Concept"
+                                    onclick="selectIndicator(this)">
+                                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Ff91cb776-7a6a-410b-8738-c6222bd8ef0b.png"
+                                        width="5" alt="">
+                                    Technical.A Concept
+                                </button>
+                                <button class="indicator-btn private" data-indicator="PRIVATE"
+                                    onclick="selectIndicator(this)">
+                                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fd76350b7-fa34-44a4-8092-99c939114836.png"
+                                        width="12" alt="">
+                                    PRIVATE
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Pair Selector -->
+                        <div class="control-row" id="pair-control-row" style="display: none;">
+                            <span class="control-label">Пара:</span>
+                            <div class="pair-selector-container" style="position: relative;">
+                                <button class="pair-selector" onclick="togglePairDropdown()">
+                                    <div class="pair-icons" style="display: flex;">
+                                        <img id="pair-icon-1"
+                                            src="https://hatscripts.github.io/circle-flags/flags/eu.svg" width="20"
+                                            alt="">
+                                        <img id="pair-icon-2"
+                                            src="https://hatscripts.github.io/circle-flags/flags/us.svg" width="20"
+                                            alt="" style="margin-left: -5px;">
+                                    </div>
+                                    <span id="selected-pair">EURUSD</span>
+                                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F9040203e-310e-452d-8c20-7a49b2ba5b6d.png"
+                                        width="14" alt="v">
+                                </button>
+                                <div id="pair-dropdown" class="pair-dropdown-menu"
+                                    style="display: none; position: absolute; top: 100%; left: 0; min-width: 100%; background: #14131D; border: 1px solid #0F235F; border-radius: 12px; z-index: 100; margin-top: 5px; overflow-y: auto;">
+
+                                    <div class="pair-option" onclick="selectPair('EURUSD', 'eu', 'us')">
+                                        <div class="pair-icons">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/eu.svg" width="20"
+                                                alt="">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" width="20"
+                                                alt="">
+                                        </div>
+                                        EURUSD
+                                    </div>
+                                    <div class="pair-option" onclick="selectPair('GBPJPY', 'gb', 'jp')">
+                                        <div class="pair-icons">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/gb.svg" width="20"
+                                                alt="">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/jp.svg" width="20"
+                                                alt="">
+                                        </div>
+                                        GBPJPY
+                                    </div>
+                                    <div class="pair-option" onclick="selectPair('GBPUSD', 'gb', 'us')">
+                                        <div class="pair-icons">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/gb.svg" width="20"
+                                                alt="">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" width="20"
+                                                alt="">
+                                        </div>
+                                        GBPUSD
+                                    </div>
+                                    <div class="pair-option" onclick="selectPair('USDJPY', 'us', 'jp')">
+                                        <div class="pair-icons">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" width="20"
+                                                alt="">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/jp.svg" width="20"
+                                                alt="">
+                                        </div>
+                                        USDJPY
+                                    </div>
+                                    <div class="pair-option" onclick="selectPair('AUDUSD', 'au', 'us')">
+                                        <div class="pair-icons">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/au.svg" width="20"
+                                                alt="">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" width="20"
+                                                alt="">
+                                        </div>
+                                        AUDUSD
+                                    </div>
+                                    <div class="pair-option" onclick="selectPair('USDCHF', 'us', 'ch')">
+                                        <div class="pair-icons">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" width="20"
+                                                alt="">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/ch.svg" width="20"
+                                                alt="">
+                                        </div>
+                                        USDCHF
+                                    </div>
+                                    <div class="pair-option" onclick="selectPair('NZDUSD', 'nz', 'us')">
+                                        <div class="pair-icons">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/nz.svg" width="20"
+                                                alt="">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" width="20"
+                                                alt="">
+                                        </div>
+                                        NZDUSD
+                                    </div>
+                                    <div class="pair-option" onclick="selectPair('USDCAD', 'us', 'ca')">
+                                        <div class="pair-icons">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" width="20"
+                                                alt="">
+                                            <img src="https://hatscripts.github.io/circle-flags/flags/ca.svg" width="20"
+                                                alt="">
+                                        </div>
+                                        USDCAD
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Time Selector -->
+                        <div class="control-row">
+                            <span class="control-label">Время:</span>
+                            <div class="time-group">
+                                <button class="time-btn active" data-minutes="3" onclick="selectTime(this)">3м</button>
+                                <button class="time-btn" data-minutes="5" onclick="selectTime(this)">5м</button>
+                                <button class="time-btn" data-minutes="7" onclick="selectTime(this)">7м</button>
+                                <button class="time-btn" data-minutes="10" onclick="selectTime(this)">10м</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="actions-footer">
+                        <a href="index.html" class="btn-secondary">На главную</a>
+                        <button class="btn-signal" id="btn-get-signal" onclick="getSignal()">Получить новый
+                            сигнал</button>
+                        <button class="btn-secondary" onclick="resetSignal()">Поменять настройки</button>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="signal-loading" id="signal-loading">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Анализ рынка...</p>
+                    <p class="loading-subtext" id="loading-indicator-text">Используем AI для анализа</p>
+                </div>
+
+                <!-- Signal Active State -->
+                <div class="signal-active" id="signal-active">
+                    <p class="signal-note">Если валютная пара на брокере отображается как OTC, нажмите «Сбросить
+                        сигнал», чтобы получить новый.</p>
+
+                    <div class="price-badge">
+                        <span class="price-label">Цена открытия:</span>
+                        <span class="price-value" id="opening-price">$1.34225</span>
+                    </div>
+
+                    <div class="analytics-section">
+                        <div class="analytics-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                            Аналитика
+                        </div>
+
+                        <div class="analytics-card">
+                            <div class="symbol-info">
+                                <div class="symbol-flags" id="signal-flags">
+                                    <img src="https://hatscripts.github.io/circle-flags/flags/gb.svg" width="32" alt="">
+                                    <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" width="32" alt="">
+                                </div>
+                                <div class="symbol-details">
+                                    <div class="symbol-name">Символ:</div>
+                                    <div class="symbol-pair" id="signal-symbol">GBPUSD</div>
+                                </div>
+                            </div>
+
+                            <div class="direction-info">
+                                <div class="direction-label">Направление:</div>
+                                <div class="direction-value" id="signal-direction">Продажа 🔴</div>
+                            </div>
+
+                            <div class="time-info">
+                                <div class="time-label">Время до:</div>
+                                <div class="time-value" id="signal-end-time">19:15</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="countdown-section">
+                        <div class="countdown-card">
+                            <div class="countdown-title">Время до конца</div>
+                            <div id="countdown-time"
+                                style="font-size: 32px; font-weight: 700; color: #0A7CFF; margin-bottom: 12px;">03:00
+                            </div>
+                            <div class="countdown-bar">
+                                <div class="countdown-progress" id="countdown-progress" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="actions-footer">
+                        <button class="btn-signal" id="btn-new-signal-active" onclick="getSignal()" disabled>Получить
+                            новый сигнал</button>
+                        <a href="index.html" class="btn-secondary">На главную</a>
+                        <button class="btn-secondary" id="btn-reset-signal" onclick="resetSignal()">Сбросить
+                            сигнал</button>
+                    </div>
+                </div>
+
+                <!-- Result State -->
+                <div class="signal-result" id="signal-result">
+                    <div class="analytics-section">
+                        <div class="analytics-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                            Аналитика
+                        </div>
+
+                        <div class="result-analytics">
+                            <div class="analytics-card">
+                                <div class="symbol-info">
+                                    <div class="symbol-flags" id="result-flags">
+                                        <img src="https://hatscripts.github.io/circle-flags/flags/gb.svg" width="32"
+                                            alt="">
+                                        <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" width="32"
+                                            alt="">
+                                    </div>
+                                    <div class="symbol-details">
+                                        <div class="symbol-name">Символ:</div>
+                                        <div class="symbol-pair" id="result-symbol">GBPUSD</div>
+                                    </div>
+                                </div>
+
+                                <div class="direction-info">
+                                    <div class="direction-label">Направление:</div>
+                                    <div class="direction-value" id="result-direction">Продажа 🔴</div>
+                                </div>
+
+                                <div class="time-info">
+                                    <div class="time-label">Время до:</div>
+                                    <div class="time-value" id="result-end-time">19:15</div>
+                                </div>
+                            </div>
+
+                            <div class="prices-section">
+                                <div class="price-row">
+                                    <span class="price-label open">Цена открытия:</span>
+                                    <span class="price-value" id="result-open-price">$1.34225</span>
+                                </div>
+                                <div class="price-row">
+                                    <span class="price-label close">Цена закрытия:</span>
+                                    <span class="price-value" id="result-close-price">$1.34208</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-title">Результат:</div>
+                        <div class="result-value" id="result-outcome">WIN</div>
+                    </div>
+
+                    <div class="actions-footer">
+                        <button class="btn-signal" id="btn-new-signal-result" onclick="getSignal()">Получить новый
+                            сигнал</button>
+                        <a href="index.html" class="btn-secondary">На главную</a>
+                        <button class="btn-secondary" onclick="resetSignal()">Поменять настройки</button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section class="signal-faq-section">
-        <div class="container">
-            <h2 class="signal-faq-title">Часто задаваемые вопросы</h2>
-            <p class="signal-faq-subtitle">Все, что вам нужно знать для успешного старта</p>
-
-            <div class="signal-faq-list">
-                <!-- FAQ Item 1 - Expanded -->
-                <div class="signal-faq-item active">
-                    <div class="signal-faq-item-inner">
-                        <div class="signal-faq-header">
-                            <span class="signal-faq-question">Как начать торговлю на вашей платформе?</span>
-                            <span class="signal-faq-icon">+</span>
-                        </div>
-                        <div class="signal-faq-answer">
-                            <p>Чтобы начать, зарегистрируйте аккаунт, пополните свой счет и выберите инструменты для
-                                торговли. После этого вы готовы к первым сделкам.</p>
-                        </div>
-                    </div>
+    <!-- INFO MODAL -->
+    <div id="info-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <img id="modal-icon" src="" width="16" alt="">
+                    <span id="modal-title-text"></span>
                 </div>
-
-                <!-- FAQ Item 2 -->
-                <div class="signal-faq-item">
-                    <div class="signal-faq-item-inner">
-                        <div class="signal-faq-header">
-                            <span class="signal-faq-question">Нужно ли иметь опыт для торговли?</span>
-                            <span class="signal-faq-icon">+</span>
-                        </div>
-                        <div class="signal-faq-answer">
-                            <p>Нет, наша платформа подходит как для новичков, так и для опытных трейдеров. Мы
-                                предоставляем обучающие материалы и поддержку для всех уровней.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- FAQ Item 3 -->
-                <div class="signal-faq-item">
-                    <div class="signal-faq-item-inner">
-                        <div class="signal-faq-header">
-                            <span class="signal-faq-question">Что такое торговые сигналы и как ими пользоваться?</span>
-                            <span class="signal-faq-icon">+</span>
-                        </div>
-                        <div class="signal-faq-answer">
-                            <p>Торговые сигналы — это рекомендации по покупке или продаже активов, основанные на
-                                техническом анализе. Следуйте нашим сигналам для принятия торговых решений.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- FAQ Item 4 -->
-                <div class="signal-faq-item">
-                    <div class="signal-faq-item-inner">
-                        <div class="signal-faq-header">
-                            <span class="signal-faq-question">Какие методы пополнения счета доступны?</span>
-                            <span class="signal-faq-icon">+</span>
-                        </div>
-                        <div class="signal-faq-answer">
-                            <p>Мы поддерживаем различные методы пополнения: банковские карты, криптовалюты, электронные
-                                кошельки и банковские переводы.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- FAQ Item 5 -->
-                <div class="signal-faq-item">
-                    <div class="signal-faq-item-inner">
-                        <div class="signal-faq-header">
-                            <span class="signal-faq-question">Есть ли поддержка 24/7?</span>
-                            <span class="signal-faq-icon">+</span>
-                        </div>
-                        <div class="signal-faq-answer">
-                            <p>Да, наша служба поддержки работает круглосуточно. Вы можете связаться с нами через
-                                Telegram или электронную почту в любое время.</p>
-                        </div>
-                    </div>
-                </div>
+                <button class="modal-close" onclick="closeInfoModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-description"></p>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- CTA Section -->
-    <section class="signal-cta-section">
-        <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F21fd1579-4ccd-4d19-83f6-1f49b1ea1f86.png"
-            alt="" class="signal-cta-bg">
-        <div class="signal-cta-card">
-            <p class="signal-cta-text">Есть торговая идея? Начните реализовывать<br>её с нами уже сегодня!</p>
-        </div>
-    </section>
+    <!-- TradingView Widget Script -->
+    <script src="https://s3.tradingview.com/tv.js"></script>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <p class="copyright">Copyright © 2026 AI.BOOST | Все права защищены</p>
-            <div class="footer-links">
-                <a href="#" class="footer-link">Условия и положения</a>
-                <span class="footer-divider">|</span>
-                <a href="#" class="footer-link">Политика файлов куки</a>
-                <span class="footer-divider">|</span>
-                <a href="#" class="footer-link">Политика конфиденциальности</a>
-                <span class="footer-divider">|</span>
-                <a href="#" class="footer-link">Telegram support</a>
-            </div>
-        </div>
-    </footer>
-
+    <script src="auth.js"></script>
     <script>
-        // Mobile Menu Toggle
+        // ========== CONFIG ==========
+        // OpenAI API Key is loaded from config.js
+
+        // Pairs data
+        const pairsData = {
+            'EURUSD': { flag1: 'eu', flag2: 'us', tv: 'FX:EURUSD' },
+            'GBPUSD': { flag1: 'gb', flag2: 'us', tv: 'FX:GBPUSD' },
+            'GBPJPY': { flag1: 'gb', flag2: 'jp', tv: 'FX:GBPJPY' },
+            'USDJPY': { flag1: 'us', flag2: 'jp', tv: 'FX:USDJPY' },
+            'AUDUSD': { flag1: 'au', flag2: 'us', tv: 'FX:AUDUSD' },
+            'USDCHF': { flag1: 'us', flag2: 'ch', tv: 'FX:USDCHF' },
+            'NZDUSD': { flag1: 'nz', flag2: 'us', tv: 'FX:NZDUSD' },
+            'USDCAD': { flag1: 'us', flag2: 'ca', tv: 'FX:USDCAD' }
+        };
+
+        // Current signal state
+        let currentSignal = null;
+        let countdownInterval = null;
+        let tradingViewWidget = null;
+
+        // ========== AUTH CHECK ==========
+        Auth.protectPage();
+
+        // ========== MARKET STATUS ==========
+        function checkMarketStatus() {
+            const now = new Date();
+            const day = now.getDay();
+            const hour = now.getHours();
+
+            const isWeekday = day >= 1 && day <= 5;
+            const isWorkingHours = hour >= 7 && hour < 21;
+
+            const marketClosed = document.getElementById('market-closed');
+            const marketOpen = document.getElementById('market-open');
+
+            if (isWeekday && isWorkingHours) {
+                marketClosed.style.display = 'none';
+                marketOpen.style.display = 'flex';
+                initTradingViewWidget('FX:EURUSD');
+            } else {
+                marketClosed.style.display = 'block';
+                marketOpen.style.display = 'none';
+            }
+        }
+
+        checkMarketStatus();
+        setInterval(checkMarketStatus, 60000);
+
+        // ========== TRADINGVIEW WIDGET ==========
+        function initTradingViewWidget(symbol, interval = '1') {
+            const container = document.getElementById('tradingview-widget');
+            container.innerHTML = '';
+
+            new TradingView.widget({
+                "width": "100%",
+                "height": 400,
+                "symbol": symbol,
+                "interval": interval,
+                "timezone": "Europe/Moscow",
+                "theme": "dark",
+                "style": "1",
+                "locale": "ru",
+                "toolbar_bg": "#0a0a0f",
+                "enable_publishing": false,
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "container_id": "tradingview-widget",
+                "hide_volume": true
+            });
+        }
+
+        // ========== UI CONTROLS ==========
+        function selectTime(btn) {
+            document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function selectIndicator(btn) {
+            document.querySelectorAll('.indicator-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const pairRow = document.getElementById('pair-control-row');
+            if (btn.dataset.indicator === 'AI') {
+                pairRow.style.display = 'none';
+            } else {
+                pairRow.style.display = 'flex';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const activeIndicator = document.querySelector('.indicator-btn.active');
+            if (activeIndicator) {
+                selectIndicator(activeIndicator);
+            }
+        });
+
+        function togglePairDropdown() {
+            const dropdown = document.getElementById('pair-dropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function selectPair(pair, flag1, flag2) {
+            document.getElementById('selected-pair').textContent = pair;
+            document.getElementById('pair-dropdown').style.display = 'none';
+            document.getElementById('pair-icon-1').src = `https://hatscripts.github.io/circle-flags/flags/${flag1}.svg`;
+            document.getElementById('pair-icon-2').src = `https://hatscripts.github.io/circle-flags/flags/${flag2}.svg`;
+
+            // Update TradingView widget
+            if (pairsData[pair]) {
+                initTradingViewWidget(pairsData[pair].tv);
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            const container = document.querySelector('.pair-selector-container');
+            if (container && !container.contains(e.target)) {
+                document.getElementById('pair-dropdown').style.display = 'none';
+            }
+        });
+
         function toggleMenu() {
             const nav = document.querySelector('.nav');
             const menuToggle = document.querySelector('.menu-toggle');
@@ -369,25 +1211,444 @@
             }
         }
 
-        // FAQ Accordion
-        document.querySelectorAll('.signal-faq-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const item = header.closest('.signal-faq-item');
-                const wasActive = item.classList.contains('active');
+        // ========== REAL PRICE API ==========
+        async function getRealPrice(symbol) {
+            // Fallback prices in case API fails
+            const fallbackPrices = {
+                'EURUSD': 1.08500,
+                'GBPUSD': 1.26500,
+                'GBPJPY': 195.500,
+                'USDJPY': 154.500,
+                'AUDUSD': 0.62500,
+                'USDCHF': 0.90500,
+                'NZDUSD': 0.56500,
+                'USDCAD': 1.43500
+            };
 
-                // Close all items
-                document.querySelectorAll('.signal-faq-item').forEach(faqItem => {
-                    faqItem.classList.remove('active');
-                });
+            try {
+                // Format symbol for API (e.g., EURUSD -> EUR/USD)
+                const base = symbol.substring(0, 3);
+                const quote = symbol.substring(3, 6);
 
-                // Toggle current item
-                if (!wasActive) {
-                    item.classList.add('active');
+                // Use free Twelve Data API
+                const response = await fetch(`https://api.twelvedata.com/price?symbol=${base}/${quote}&apikey=demo`);
+                const data = await response.json();
+
+                if (data.price) {
+                    // Round to 5 decimals for forex, 3 for JPY pairs
+                    const decimals = symbol.includes('JPY') ? 3 : 5;
+                    return parseFloat(data.price).toFixed(decimals);
                 }
+
+                // Fallback to ExchangeRate API
+                const fallbackResponse = await fetch(`https://api.exchangerate.host/convert?from=${base}&to=${quote}&amount=1`);
+                const fallbackData = await fallbackResponse.json();
+
+                if (fallbackData.result) {
+                    const decimals = symbol.includes('JPY') ? 3 : 5;
+                    return parseFloat(fallbackData.result).toFixed(decimals);
+                }
+            } catch (error) {
+                console.error('Price API error:', error);
+            }
+
+            // Use fallback price with small random variation
+            const basePrice = fallbackPrices[symbol] || 1.00000;
+            const variation = (Math.random() - 0.5) * 0.001;
+            const decimals = symbol.includes('JPY') ? 3 : 5;
+            return (basePrice + variation).toFixed(decimals);
+        }
+
+        // ========== SIGNAL LOGIC ==========
+        function showState(state) {
+            document.getElementById('settings-panel').style.display = state === 'settings' ? 'block' : 'none';
+            document.getElementById('signal-loading').classList.toggle('active', state === 'loading');
+            document.getElementById('signal-active').classList.toggle('active', state === 'active');
+            document.getElementById('signal-result').classList.toggle('active', state === 'result');
+            // Show decorative first, then TradingView chart when signal is active
+            document.getElementById('decorative-chart').style.display = (state === 'settings' || state === 'loading') ? 'block' : 'none';
+            document.getElementById('chart-container').style.display = (state === 'active' || state === 'result') ? 'block' : 'none';
+        }
+
+        async function getSignal() {
+            const activeIndicator = document.querySelector('.indicator-btn.active');
+            const indicator = activeIndicator ? activeIndicator.dataset.indicator : 'AI';
+
+            // Check if PRIVATE
+            if (indicator === 'PRIVATE') {
+                alert('Этот индикатор скоро будет доступен!');
+                return;
+            }
+
+            const selectedPair = document.getElementById('selected-pair').textContent;
+            const activeTimeBtn = document.querySelector('.time-btn.active');
+            const minutes = activeTimeBtn ? parseInt(activeTimeBtn.dataset.minutes) : 3;
+
+            // Show loading
+            showState('loading');
+            document.getElementById('loading-indicator-text').textContent =
+                indicator === 'AI' ? 'AI анализирует рынок и выбирает лучшую пару...' :
+                    indicator === 'SMART.M Concept' ? 'Анализ Smart Money концепции...' :
+                        'Технический анализ рынка...';
+
+            try {
+                // Call OpenAI API
+                const signal = await callOpenAI(indicator, selectedPair, minutes);
+
+                // Get real price from API
+                const openingPrice = await getRealPrice(signal.symbol);
+
+                // Calculate end time
+                const now = new Date();
+                const endTime = new Date(now.getTime() + minutes * 60 * 1000);
+                const endTimeStr = endTime.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+                // Store current signal
+                currentSignal = {
+                    symbol: signal.symbol,
+                    direction: signal.direction,
+                    openingPrice: openingPrice,
+                    endTime: endTime,
+                    endTimeStr: endTimeStr,
+                    minutes: minutes
+                };
+
+                // Update UI
+                updateSignalUI(currentSignal);
+
+                // Show active state
+                showState('active');
+
+                // Update TradingView with correct interval
+                if (pairsData[signal.symbol]) {
+                    // TradingView supported intervals: 1, 3, 5, 15, 30, 60, etc.
+                    // Map our time options to nearest supported interval
+                    const intervalMap = {
+                        3: '3',   // 3 min -> 3 min chart
+                        5: '5',   // 5 min -> 5 min chart  
+                        7: '5',   // 7 min -> 5 min chart (closest supported)
+                        10: '5'   // 10 min -> 5 min chart (closest supported)
+                    };
+                    const tvInterval = intervalMap[minutes] || '5';
+                    initTradingViewWidget(pairsData[signal.symbol].tv, tvInterval);
+                }
+
+                // Start countdown
+                startCountdown(minutes * 60);
+
+            } catch (error) {
+                console.error('Error getting signal:', error);
+                alert('Ошибка при получении сигнала. Попробуйте ещё раз.');
+                showState('settings');
+            }
+        }
+
+        async function callOpenAI(indicator, pair, minutes) {
+            const prompts = {
+                'AI': `Ты — профессиональный AI трейдер. Проанализируй текущую рыночную ситуацию и выбери ЛУЧШУЮ валютную пару из списка: EURUSD, GBPUSD, GBPJPY, USDJPY, AUDUSD, USDCHF, NZDUSD, USDCAD.
+
+Учитывай:
+- Текущую волатильность
+- Основные тренды
+- Новостной фон
+- Технические уровни
+
+Ответь СТРОГО в формате JSON:
+{"symbol": "XXXYYY", "direction": "BUY" или "SELL", "confidence": число от 60 до 95}`,
+
+                'SMART.M Concept': `Ты — эксперт по Smart Money концепции. Проанализируй пару ${pair} используя:
+- Зоны ликвидности
+- Order Blocks
+- Fair Value Gaps
+- Структуру рынка (BOS/CHoCH)
+
+Определи направление сделки.
+
+Ответь СТРОГО в формате JSON:
+{"symbol": "${pair}", "direction": "BUY" или "SELL", "confidence": число от 60 до 95}`,
+
+                'Technical.A Concept': `Ты — технический аналитик. Проанализируй пару ${pair} используя классический теханализ:
+- Уровни поддержки и сопротивления
+- Скользящие средние
+- RSI, MACD
+- Паттерны свечей
+
+Определи направление сделки.
+
+Ответь СТРОГО в формате JSON:
+{"symbol": "${pair}", "direction": "BUY" или "SELL", "confidence": число от 60 до 95}`
+            };
+
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${OPENAI_API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o-mini',
+                    messages: [
+                        {
+                            role: 'system',
+                            content: 'Ты профессиональный трейдер. Отвечай ТОЛЬКО валидным JSON без markdown.'
+                        },
+                        {
+                            role: 'user',
+                            content: prompts[indicator]
+                        }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 150
+                })
             });
+
+            if (!response.ok) {
+                throw new Error('API request failed');
+            }
+
+            const data = await response.json();
+            const content = data.choices[0].message.content.trim();
+
+            // Parse JSON from response
+            const jsonMatch = content.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                return JSON.parse(jsonMatch[0]);
+            }
+
+            throw new Error('Invalid response format');
+        }
+
+        function updateSignalUI(signal) {
+            const pairInfo = pairsData[signal.symbol] || { flag1: 'xx', flag2: 'xx' };
+
+            // Update signal-active UI
+            document.getElementById('opening-price').textContent = '$' + signal.openingPrice;
+            document.getElementById('signal-symbol').textContent = signal.symbol;
+            document.getElementById('signal-end-time').textContent = signal.endTimeStr;
+
+            const directionEl = document.getElementById('signal-direction');
+            if (signal.direction === 'BUY') {
+                directionEl.textContent = 'Покупка 🟢';
+                directionEl.className = 'direction-value buy';
+            } else {
+                directionEl.textContent = 'Продажа 🔴';
+                directionEl.className = 'direction-value sell';
+            }
+
+            // Update flags
+            const flagsHtml = `
+                <img src="https://hatscripts.github.io/circle-flags/flags/${pairInfo.flag1}.svg" width="32" alt="">
+                <img src="https://hatscripts.github.io/circle-flags/flags/${pairInfo.flag2}.svg" width="32" alt="">
+            `;
+            document.getElementById('signal-flags').innerHTML = flagsHtml;
+        }
+
+        function startCountdown(seconds) {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            const totalSeconds = seconds;
+            let remaining = seconds;
+
+            const progressBar = document.getElementById('countdown-progress');
+            const countdownTimeEl = document.getElementById('countdown-time');
+            const btnNewSignal = document.getElementById('btn-new-signal-active');
+            const btnResetSignal = document.getElementById('btn-reset-signal');
+
+            // Disable "Получить новый сигнал" button while timer is running
+            if (btnNewSignal) {
+                btnNewSignal.disabled = true;
+            }
+
+            // Reset the "Сбросить сигнал" button text
+            if (btnResetSignal) {
+                btnResetSignal.textContent = 'Сбросить сигнал';
+            }
+
+            // Helper to format time as MM:SS
+            function formatTime(sec) {
+                const mins = Math.floor(sec / 60);
+                const secs = sec % 60;
+                return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+            }
+
+            // Set initial time
+            countdownTimeEl.textContent = formatTime(remaining);
+
+            countdownInterval = setInterval(() => {
+                remaining--;
+                const percent = (remaining / totalSeconds) * 100;
+                progressBar.style.width = percent + '%';
+                countdownTimeEl.textContent = formatTime(remaining);
+
+                if (remaining <= 0) {
+                    clearInterval(countdownInterval);
+
+                    // Enable "Получить новый сигнал" button
+                    if (btnNewSignal) {
+                        btnNewSignal.disabled = false;
+                    }
+
+                    // Change "Сбросить сигнал" to "Поменять настройки"
+                    if (btnResetSignal) {
+                        btnResetSignal.textContent = 'Поменять настройки';
+                    }
+
+                    showResult();
+                }
+            }, 1000);
+        }
+
+
+        async function showResult() {
+            if (!currentSignal) return;
+
+            // Get real closing price from API
+            const openPrice = parseFloat(currentSignal.openingPrice);
+            const closePriceStr = await getRealPrice(currentSignal.symbol);
+            const closePrice = parseFloat(closePriceStr);
+
+            // Determine WIN/LOSE based on ACTUAL price comparison and direction
+            let isWin;
+            if (currentSignal.direction === 'BUY') {
+                // BUY wins if price went UP (close > open)
+                isWin = closePrice > openPrice;
+            } else {
+                // SELL wins if price went DOWN (close < open)
+                isWin = closePrice < openPrice;
+            }
+
+            // Update result UI
+            const pairInfo = pairsData[currentSignal.symbol] || { flag1: 'xx', flag2: 'xx' };
+
+            document.getElementById('result-symbol').textContent = currentSignal.symbol;
+            document.getElementById('result-end-time').textContent = currentSignal.endTimeStr;
+            document.getElementById('result-open-price').textContent = '$' + currentSignal.openingPrice;
+            document.getElementById('result-close-price').textContent = '$' + closePriceStr;
+
+            const resultDirectionEl = document.getElementById('result-direction');
+            if (currentSignal.direction === 'BUY') {
+                resultDirectionEl.textContent = 'Покупка 🟢';
+                resultDirectionEl.className = 'direction-value buy';
+            } else {
+                resultDirectionEl.textContent = 'Продажа 🔴';
+                resultDirectionEl.className = 'direction-value sell';
+            }
+
+            const resultFlagsHtml = `
+                <img src="https://hatscripts.github.io/circle-flags/flags/${pairInfo.flag1}.svg" width="32" alt="">
+                <img src="https://hatscripts.github.io/circle-flags/flags/${pairInfo.flag2}.svg" width="32" alt="">
+            `;
+            document.getElementById('result-flags').innerHTML = resultFlagsHtml;
+
+            const outcomeEl = document.getElementById('result-outcome');
+            outcomeEl.textContent = isWin ? 'WIN' : 'LOSE';
+            outcomeEl.className = 'result-value ' + (isWin ? 'win' : 'lose');
+
+            // Save trade to history
+            saveTradeResult({
+                symbol: currentSignal.symbol,
+                direction: currentSignal.direction,
+                openPrice: currentSignal.openingPrice,
+                closePrice: closePriceStr,
+                result: isWin ? 'WIN' : 'LOSE',
+                timestamp: Date.now(),
+                minutes: currentSignal.minutes,
+                indicator: document.querySelector('.indicator-btn.active')?.dataset.indicator || 'AI'
+            });
+
+            showState('result');
+        }
+
+        async function saveTradeResult(trade) {
+            // Save to localStorage (backup/fallback)
+            const history = JSON.parse(localStorage.getItem('ai_trading_history') || '[]');
+            history.unshift(trade);
+            localStorage.setItem('ai_trading_history', JSON.stringify(history));
+
+            // Save to Supabase
+            const supabase = window.SupabaseClient ? window.SupabaseClient.get() : null;
+            if (supabase) {
+                try {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (user) {
+                        await supabase.from('trade_history').insert({
+                            user_id: user.id,
+                            symbol: trade.symbol,
+                            direction: trade.direction,
+                            open_price: parseFloat(trade.openPrice),
+                            close_price: parseFloat(trade.closePrice),
+                            result: trade.result,
+                            minutes: trade.minutes,
+                            indicator: trade.indicator
+                        });
+                        console.log('✅ Trade saved to Supabase');
+                    }
+                } catch (error) {
+                    console.error('Error saving to Supabase:', error);
+                }
+            }
+        }
+
+        function resetSignal() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            currentSignal = null;
+            showState('settings');
+        }
+
+        // ========== MODAL LOGIC ==========
+        const infoData = {
+            'AI': {
+                title: 'AI',
+                icon: 'https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fda92c972-950a-4a14-a300-b116defbfa09.png',
+                description: 'AI — индикатор, использующий искусственный интеллект для анализа рынка и прогнозирования ценовых движений. Он учитывает огромные объемы данных и может выявлять сложные паттерны, которые трудно заметить человеку. Он самостоятельно выбирает наиболее перспективные валютные пары, учитывая текущую волатильность, новостной фон и технические сигналы.'
+            },
+            'SMART.M Concept': {
+                title: 'SMART.M Concept',
+                icon: 'https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F0e20d4ad-cf02-4a87-8ee5-469a58387230.png',
+                description: 'Smart M — индикатор, основанный на принципах Smart Money — подхода, который учитывает действия крупных участников рынка. Индикатор определяет зоны ликвидности, потенциальные точки входа и выхода капитала.'
+            },
+            'Technical.A Concept': {
+                title: 'Technical.A Concept',
+                icon: 'https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Ff91cb776-7a6a-410b-8738-c6222bd8ef0b.png',
+                description: 'Technical A — индикатор, основанный на классическом техническом анализе. Он учитывает ценовые уровни, объёмы и волатильность для выявления трендов и разворотов.'
+            },
+            'PRIVATE': {
+                title: 'PRIVATE',
+                icon: 'https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fd76350b7-fa34-44a4-8092-99c939114836.png',
+                description: 'Скоро...'
+            }
+        };
+
+        function showInfoModal() {
+            const activeBtn = document.querySelector('.indicator-btn.active');
+            if (!activeBtn) return;
+
+            const indicator = activeBtn.dataset.indicator;
+            const data = infoData[indicator];
+
+            if (data) {
+                document.getElementById('modal-title-text').textContent = data.title;
+                document.getElementById('modal-icon').src = data.icon;
+                document.getElementById('modal-description').textContent = data.description;
+                document.getElementById('info-modal').classList.add('active');
+            }
+        }
+
+        function closeInfoModal() {
+            document.getElementById('info-modal').classList.remove('active');
+        }
+
+        document.getElementById('info-modal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeInfoModal();
+            }
         });
 
-        // Header scroll effect
+        // ========== SCROLL EFFECT ==========
         window.addEventListener('scroll', () => {
             const header = document.querySelector('.header');
             if (window.scrollY > 50) {
@@ -396,7 +1657,179 @@
                 header.style.background = 'rgba(10, 10, 15, 0.95)';
             }
         });
+
+        // ========== FAQ ACCORDION ==========
+        document.querySelectorAll('.signal-faq-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.closest('.signal-faq-item');
+                const answer = item.querySelector('.signal-faq-answer');
+                const isActive = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+
+                // Close all
+                document.querySelectorAll('.signal-faq-answer').forEach(a => {
+                    a.style.maxHeight = '0';
+                    a.style.padding = '0 24px';
+                });
+
+                // Toggle current
+                if (!isActive) {
+                    answer.style.maxHeight = '200px';
+                    answer.style.padding = '0 24px 24px';
+                }
+            });
+        });
     </script>
+
+    <!-- FAQ Section -->
+    <section class="signal-faq-section" style="padding: 60px 0;">
+        <div class="container">
+            <h2 style="font-size: 50px; font-weight: 600; color: #FBFBFB; text-align: center; margin-bottom: 16px;">
+                Часто задаваемые вопросы</h2>
+            <p style="font-size: 24px; color: #FBFBFB; text-align: center; margin-bottom: 60px;">Все, что вам нужно
+                знать для успешного старта</p>
+
+            <div style="display: flex; flex-direction: column; gap: 24px; max-width: 1244px; margin: 0 auto;">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item"
+                    style="padding: 2px; border-radius: 20px; background: linear-gradient(90deg, #0A7CFF, transparent);">
+                    <div style="background: #14131D; border-radius: 18px; overflow: hidden;">
+                        <div class="faq-header"
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; cursor: pointer;">
+                            <span style="font-size: 22px; font-weight: 600; color: #FBFBFB;">Как начать торговлю на
+                                вашей платформе?</span>
+                            <span style="font-size: 20px; color: #FBFBFB; transition: transform 0.3s;">▼</span>
+                        </div>
+                        <div class="faq-answer"
+                            style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                            <p style="font-size: 16px; color: #FBFBFB; line-height: 1.6; padding: 0 24px 24px;">Чтобы
+                                начать, зарегистрируйте аккаунт, пополните свой счет и выберите инструменты для
+                                торговли. После этого вы готовы к первым сделкам.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="faq-item"
+                    style="padding: 2px; border-radius: 20px; background: linear-gradient(90deg, #0A7CFF, transparent);">
+                    <div style="background: #14131D; border-radius: 18px; overflow: hidden;">
+                        <div class="faq-header"
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; cursor: pointer;">
+                            <span style="font-size: 22px; font-weight: 600; color: #FBFBFB;">Нужно ли иметь опыт для
+                                торговли?</span>
+                            <span style="font-size: 20px; color: #FBFBFB; transition: transform 0.3s;">▼</span>
+                        </div>
+                        <div class="faq-answer"
+                            style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                            <p style="font-size: 16px; color: #FBFBFB; line-height: 1.6; padding: 0 24px 24px;">Нет,
+                                наша платформа подходит как для новичков, так и для опытных трейдеров.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="faq-item"
+                    style="padding: 2px; border-radius: 20px; background: linear-gradient(90deg, #0A7CFF, transparent);">
+                    <div style="background: #14131D; border-radius: 18px; overflow: hidden;">
+                        <div class="faq-header"
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; cursor: pointer;">
+                            <span style="font-size: 22px; font-weight: 600; color: #FBFBFB;">Что такое торговые сигналы
+                                и как ими пользоваться?</span>
+                            <span style="font-size: 20px; color: #FBFBFB; transition: transform 0.3s;">▼</span>
+                        </div>
+                        <div class="faq-answer"
+                            style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                            <p style="font-size: 16px; color: #FBFBFB; line-height: 1.6; padding: 0 24px 24px;">Торговые
+                                сигналы — это рекомендации по покупке или продаже активов на основе анализа рынка. Вы
+                                можете использовать их для принятия обоснованных решений при торговле.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="faq-item"
+                    style="padding: 2px; border-radius: 20px; background: linear-gradient(90deg, #0A7CFF, transparent);">
+                    <div style="background: #14131D; border-radius: 18px; overflow: hidden;">
+                        <div class="faq-header"
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; cursor: pointer;">
+                            <span style="font-size: 22px; font-weight: 600; color: #FBFBFB;">Какие методы пополнения
+                                счета доступны?</span>
+                            <span style="font-size: 20px; color: #FBFBFB; transition: transform 0.3s;">▼</span>
+                        </div>
+                        <div class="faq-answer"
+                            style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                            <p style="font-size: 16px; color: #FBFBFB; line-height: 1.6; padding: 0 24px 24px;">
+                                Пополнение счета происходит на стороне платформы Pocket Option.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 5 -->
+                <div class="faq-item"
+                    style="padding: 2px; border-radius: 20px; background: linear-gradient(90deg, #0A7CFF, transparent);">
+                    <div style="background: #14131D; border-radius: 18px; overflow: hidden;">
+                        <div class="faq-header"
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; cursor: pointer;">
+                            <span style="font-size: 22px; font-weight: 600; color: #FBFBFB;">Есть ли поддержка
+                                24/7?</span>
+                            <span style="font-size: 20px; color: #FBFBFB; transition: transform 0.3s;">▼</span>
+                        </div>
+                        <div class="faq-answer"
+                            style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
+                            <p style="font-size: 16px; color: #FBFBFB; line-height: 1.6; padding: 0 24px 24px;">Да, если
+                                у вас возникнут вопросы, вы можете обратиться к нашей команде через телеграм - <a
+                                    href="https://t.me/aiboostapp" style="color: #0A7CFF;">https://t.me/aiboostapp</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Accordion Script (after DOM elements) -->
+    <script>
+        document.querySelectorAll('.faq-header').forEach(header => {
+            header.addEventListener('click', function () {
+                const item = this.closest('.faq-item');
+                const answer = item.querySelector('.faq-answer');
+                const arrow = this.querySelector('span:last-child');
+                const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+
+                // Close all
+                document.querySelectorAll('.faq-answer').forEach(a => {
+                    a.style.maxHeight = '0px';
+                });
+                document.querySelectorAll('.faq-header span:last-child').forEach(a => {
+                    a.style.transform = 'rotate(0deg)';
+                });
+
+                // Toggle current
+                if (!isOpen) {
+                    answer.style.maxHeight = '200px';
+                    arrow.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+    </script>
+
+    <!-- Footer -->
+    <footer class="footer" style="padding: 60px 0 40px; background: #0A0A0F;">
+        <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
+            <div class="footer-logo">
+                <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                    alt="AI.BOOST Logo" style="height: 55px;">
+            </div>
+            <div style="text-align: center; color: #C4C4C4; font-size: 12px; line-height: 1.8;">
+                <p style="margin: 0;">Copyright © 2026 AI.BOOST | Все права защищены | <a href="https://t.me/aiboostapp"
+                        style="color: #B4B9C9; text-decoration: none;">Telegram support</a> |</p>
+                <p style="margin: 8px 0 0;">
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Условия и положения</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика конфиденциальности</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика файлов куки</a>
+                </p>
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>

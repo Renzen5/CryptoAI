@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - AI.BOOST</title>
+    <meta name="description" content="Зарегистрируйтесь в AI.BOOST и начните торговать криптовалютой">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
+    <style>
+        /* Registration Page Specific Styles */
+        .register-page {
+            min-height: 100vh;
+            background: #0A0A0F;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .register-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 20px 60px;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            padding: 3px;
+            background: linear-gradient(135deg, #0A7CFF 0%, #0400FF 50%, transparent 100%);
+        }
+
+        .register-card-inner {
+            background: #14131D;
+            border-radius: 18px;
+            padding: 40px;
+        }
+
+        .register-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #FBFBFB;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #FBFBFB;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0A7CFF;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        #registerForm .btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .register-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .register-footer a {
+            color: #0A7CFF;
+            text-decoration: none;
+        }
+
+        .register-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Active nav link style */
+        .nav-link.active {
+            color: #0B6EE1;
+        }
+
+        /* Page Footer */
+        .page-footer {
+            background: #0A0A0F;
+            padding: 40px 0 30px;
+            text-align: center;
+        }
+
+        .page-footer .footer-logo img {
+            height: 40px;
+            margin-bottom: 20px;
+        }
+
+        .page-footer .copyright {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .page-footer .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .page-footer .footer-link {
+            color: #0A7CFF;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .page-footer .footer-divider {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .register-content {
+                padding: 100px 20px 40px;
+            }
+
+            .register-card-inner {
+                padding: 30px 24px;
+            }
+
+            .register-title {
+                font-size: 24px;
+            }
+
+            .page-footer .footer-links {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .page-footer .footer-divider {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="register-page">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                        alt="AI.BOOST Logo" class="logo-img">
+                </a>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="about.html" class="nav-link">О нас</a>
+                <a href="signal.html" class="nav-link auth-only">Сигнал</a>
+                <a href="history.html" class="nav-link auth-only">История сделок</a>
+                <a href="instructions.html" class="nav-link">Инструкция</a>
+            </nav>
+            <div class="header-actions">
+                <button class="lang-btn">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F06bce085-a175-41db-be61-2172833b6876.png"
+                        alt="RU" class="lang-icon">
+                    <span>RU</span>
+                </button>
+                <a href="register.html" class="btn btn-primary guest-only">Регистрация</a>
+                <a href="profile.html" class="icon-btn user-btn auth-only">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbfbfb" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </a>
+                <button class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Registration Form -->
+    <main class="register-content">
+        <div class="register-card">
+            <div class="register-card-inner">
+                <h1 class="register-title">Регистрация</h1>
+
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" placeholder="Введите email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Пароль</label>
+                        <input type="password" class="form-input" placeholder="Введите пароль" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Подтвердите пароль</label>
+                        <input type="password" class="form-input" placeholder="Повторите пароль" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                </form>
+
+                <p class="register-footer">
+                    Уже есть аккаунт? <a href="login.html">Войти</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" style="padding: 60px 0 40px; background: #0A0A0F;">
+        <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
+            <div class="footer-logo">
+                <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                    alt="AI.BOOST Logo" style="height: 55px;">
+            </div>
+            <div style="text-align: center; color: #C4C4C4; font-size: 12px; line-height: 1.8;">
+                <p style="margin: 0;">Copyright © 2026 AI.BOOST | Все права защищены | <a href="https://t.me/aiboostapp"
+                        style="color: #B4B9C9; text-decoration: none;">Telegram support</a> |</p>
+                <p style="margin: 8px 0 0;">
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Условия и положения</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика конфиденциальности</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика файлов куки</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const nav = document.querySelector('.nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (nav && menuToggle) {
+                nav.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            }
+        }
+
+        // Form submission - after DOM loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('registerForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const email = document.querySelector('input[type="email"]').value;
+                const password = document.querySelectorAll('input[type="password"]')[0].value;
+                const confirmPassword = document.querySelectorAll('input[type="password"]')[1].value;
+
+                if (password !== confirmPassword) {
+                    alert('Пароли не совпадают!');
+                    return;
+                }
+
+                const result = await Auth.signUp(email, password);
+                if (result.success) {
+                    window.location.href = 'verification.html';
+                } else {
+                    alert('Ошибка регистрации: ' + (result.error || 'Неизвестная ошибка'));
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(10, 10, 15, 0.98)';
+            } else {
+                header.style.background = 'rgba(10, 10, 15, 0.95)';
+            }
+        });
+    </script>
+</body>
+
+</html>

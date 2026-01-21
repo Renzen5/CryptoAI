@@ -13,6 +13,23 @@ body {
     overflow-x: hidden;
 }
 
+/* Auth-based visibility */
+.auth-only {
+    display: none !important;
+}
+
+.guest-only {
+    display: inline-flex !important;
+}
+
+body.logged-in .auth-only {
+    display: inline-flex !important;
+}
+
+body.logged-in .guest-only {
+    display: none !important;
+}
+
 a {
     text-decoration: none;
     color: inherit;
@@ -160,6 +177,28 @@ a {
 .lang-icon {
     width: 22px;
     height: 22px;
+}
+
+/* Registration Buttons */
+.btn-register-header {
+    background: #FBFBFB;
+    color: #0A0A0F;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-register-header:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+.btn-hero {
+    display: none;
+    margin-top: 30px;
 }
 
 /* Hero Section */
@@ -830,14 +869,34 @@ a {
     .hero-title {
         font-size: 36px;
         line-height: 1.2;
+        text-align: center;
     }
 
     .hero-subtitle {
         font-size: 16px;
+        text-align: center;
     }
 
     .hero-text {
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .header-actions .btn {
+        display: none;
+    }
+
+    .btn-hero {
+        display: inline-block;
     }
 
     .section-title {

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История сделок - AI.BOOST</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
+    <style>
+        /* History Page Specific Styles */
+        .history-section {
+            padding: 120px 0 60px;
+            min-height: 100vh;
+        }
+
+        .stats-dashboard {
+            background: linear-gradient(180deg, rgba(20, 20, 30, 0.8) 0%, rgba(10, 10, 20, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #0A7CFF;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FBFBFB;
+        }
+
+        .info-card {
+            background: linear-gradient(180deg, rgba(20, 20, 30, 0.8) 0%, rgba(10, 10, 20, 0.9) 100%);
+            border: 1px solid #0A7CFF;
+            border-radius: 20px;
+            padding: 24px;
+            overflow: hidden;
+        }
+
+        .info-header {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FBFBFB;
+            margin-bottom: 24px;
+        }
+
+        .history-table-container {
+            width: 100%;
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .history-table th {
+            text-align: left;
+            padding: 16px;
+            font-size: 14px;
+            color: #FBFBFB;
+            font-weight: 600;
+            border-bottom: 1px solid #0A7CFF;
+            position: sticky;
+            top: 0;
+            background: #0A0A0F;
+            z-index: 10;
+        }
+
+        .history-table td {
+            padding: 16px;
+            font-size: 14px;
+            color: #FBFBFB;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+        }
+
+        .pair-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pair-flags {
+            display: flex;
+            position: relative;
+            width: 40px;
+        }
+
+        .pair-flags img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #0A0A0F;
+        }
+
+        .pair-flags img:nth-child(2) {
+            position: absolute;
+            left: 16px;
+        }
+
+        .pair-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-left: 8px;
+        }
+
+        .result-win {
+            color: #00FF94;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .result-lose {
+            color: #FF4444;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .result-cancelled {
+            color: #FBFBFB;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+        }
+
+        /* Custom Scrollbar */
+        .history-table-container::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .history-table-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .history-table-container::-webkit-scrollbar-thumb {
+            background: #0A7CFF;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fd8c3d513-6b91-436b-8009-9932c3a99cdd.png"
+                    alt="AI.BOOST Logo" class="logo-img">
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="about.html" class="nav-link">О нас</a>
+                <a href="signal.html" class="nav-link">Сигнал</a>
+                <a href="history.html" class="nav-link active">История сделок</a>
+                <a href="instructions.html" class="nav-link">Инструкция</a>
+            </nav>
+            <div class="header-actions">
+                <button class="lang-btn">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F06bce085-a175-41db-be61-2172833b6876.png"
+                        alt="RU" class="lang-icon">
+                    <span>RU</span>
+                </button>
+                <a href="profile.html" class="icon-btn user-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbfbfb" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </a>
+                <button class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="history-section">
+        <div class="container">
+            <h1 class="section-title" style="margin-bottom: 24px; text-align: left;">История сделок</h1>
+
+            <!-- Stats Dashboard -->
+            <div class="stats-dashboard">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FBFBFB" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Всего сигналов</span>
+                        <span class="stat-value" id="stat-total">0</span>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#E2B105" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                            <line x1="8" y1="21" x2="16" y2="21" />
+                            <line x1="12" y1="17" x2="12" y2="21" />
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Win rate</span>
+                        <span class="stat-value" id="stat-winrate">0%</span>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00FF94" stroke-width="2">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                            <polyline points="17 6 23 6 23 12" />
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Успешные сигналы</span>
+                        <span class="stat-value" id="stat-wins">0</span>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FF4444" stroke-width="2">
+                            <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
+                            <polyline points="17 18 23 18 23 12" />
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Неуспешные сигналы</span>
+                        <span class="stat-value" id="stat-losses">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Table -->
+            <div class="info-card">
+                <h2 class="info-header">Информация</h2>
+                <div class="history-table-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Валютная пара</th>
+                                <th>Дата</th>
+                                <th>Время</th>
+                                <th>Индикатор</th>
+                                <th>Продолжительность</th>
+                                <th>Результат</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            <!-- Rows will be added here -->
+                        </tbody>
+                    </table>
+                    <div id="history-empty" class="empty-history" style="display: none;">
+                        История сделок пуста. Получите первый сигнал!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" style="padding: 60px 0 40px; background: #0A0A0F;">
+        <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
+            <div class="footer-logo">
+                <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                    alt="AI.BOOST Logo" style="height: 55px;">
+            </div>
+            <div style="text-align: center; color: #C4C4C4; font-size: 12px; line-height: 1.8;">
+                <p style="margin: 0;">Copyright © 2026 AI.BOOST | Все права защищены | <a href="https://t.me/aiboostapp"
+                        style="color: #B4B9C9; text-decoration: none;">Telegram support</a> |</p>
+                <p style="margin: 8px 0 0;">
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Условия и положения</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика конфиденциальности</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика файлов куки</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+        // Pairs data for flags
+        const pairsData = {
+            'EURUSD': { flag1: 'eu', flag2: 'us' },
+            'GBPUSD': { flag1: 'gb', flag2: 'us' },
+            'GBPJPY': { flag1: 'gb', flag2: 'jp' },
+            'USDJPY': { flag1: 'us', flag2: 'jp' },
+            'AUDUSD': { flag1: 'au', flag2: 'us' },
+            'USDCHF': { flag1: 'us', flag2: 'ch' },
+            'NZDUSD': { flag1: 'nz', flag2: 'us' },
+            'USDCAD': { flag1: 'us', flag2: 'ca' }
+        };
+
+        function toggleMenu() {
+            const nav = document.querySelector('.nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (nav && menuToggle) {
+                nav.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            }
+        }
+
+        // Load and render history
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.Auth) {
+                Auth.protectPage();
+            }
+
+            loadHistory();
+        });
+
+        async function loadHistory() {
+            const tbody = document.getElementById('history-body');
+            const emptyMsg = document.getElementById('history-empty');
+            let history = [];
+
+            // Try to load from Supabase first
+            const supabase = window.SupabaseClient ? window.SupabaseClient.get() : null;
+            if (supabase) {
+                try {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (user) {
+                        const { data, error } = await supabase
+                            .from('trade_history')
+                            .select('*')
+                            .eq('user_id', user.id)
+                            .order('created_at', { ascending: false });
+
+                        if (!error && data) {
+                            history = data.map(trade => ({
+                                symbol: trade.symbol,
+                                direction: trade.direction,
+                                openPrice: trade.open_price,
+                                closePrice: trade.close_price,
+                                result: trade.result,
+                                minutes: trade.minutes,
+                                indicator: trade.indicator,
+                                timestamp: new Date(trade.created_at).getTime()
+                            }));
+                            console.log('✅ Loaded history from Supabase:', history.length, 'trades');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading from Supabase:', error);
+                }
+            }
+
+            // Fallback to localStorage if Supabase data is empty
+            if (history.length === 0) {
+                history = JSON.parse(localStorage.getItem('ai_trading_history') || '[]');
+            }
+
+            // Calculate stats
+            let wins = 0;
+            let losses = 0;
+            let total = history.length;
+
+            if (total === 0) {
+                tbody.style.display = 'none';
+                emptyMsg.style.display = 'block';
+            } else {
+                tbody.style.display = 'table-row-group';
+                emptyMsg.style.display = 'none';
+
+                let html = '';
+                history.forEach(trade => {
+                    const date = new Date(trade.timestamp);
+                    const dateStr = date.toLocaleDateString('ru-RU');
+                    const timeStr = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+                    const pairInfo = pairsData[trade.symbol] || { flag1: 'xx', flag2: 'xx' };
+
+                    if (trade.result === 'WIN') wins++;
+                    if (trade.result === 'LOSE') losses++;
+
+                    const resultClass = trade.result === 'WIN' ? 'result-win' : 'result-lose';
+                    const resultText = trade.result;
+
+                    html += `
+                        <tr>
+                            <td>
+                                <div class="pair-cell">
+                                    <div class="pair-flags">
+                                        <img src="https://hatscripts.github.io/circle-flags/flags/${pairInfo.flag1}.svg" alt="">
+                                        <img src="https://hatscripts.github.io/circle-flags/flags/${pairInfo.flag2}.svg" alt="">
+                                    </div>
+                                    <span class="pair-name">${trade.symbol}</span>
+                                </div>
+                            </td>
+                            <td>${dateStr}</td>
+                            <td>${timeStr}</td>
+                            <td>${trade.indicator || 'AI'}</td>
+                            <td>${trade.minutes} минуты</td>
+                            <td><span class="${resultClass}">${resultText}</span></td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            }
+
+            // Update stats
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-wins').textContent = wins;
+            document.getElementById('stat-losses').textContent = losses;
+
+            const winrate = total > 0 ? Math.round((wins / total) * 100) : 0;
+            document.getElementById('stat-winrate').textContent = winrate + '%';
+        }
+    </script>
+</body>
+
+</html>

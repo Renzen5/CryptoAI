@@ -10,6 +10,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
 </head>
 
 <body>
@@ -25,27 +29,23 @@
             <nav class="nav">
                 <a href="#" class="nav-link">Главная</a>
                 <a href="about.html" class="nav-link">О нас</a>
-                <a href="signal.html" class="nav-link">Сигнал</a>
-                <a href="#" class="nav-link">История сделок</a>
-                <a href="#instructions" class="nav-link">Инструкция</a>
+                <a href="signal.html" class="nav-link auth-only">Сигнал</a>
+                <a href="history.html" class="nav-link auth-only">История сделок</a>
+                <a href="instructions.html" class="nav-link">Инструкция</a>
             </nav>
             <div class="header-actions">
-                <button class="icon-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbfbfb" stroke-width="2">
-                        <circle cx="12" cy="12" r="3" />
-                        <path
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                    </svg>
-                </button>
                 <button class="lang-btn">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F06bce085-a175-41db-be61-2172833b6876.png"
+                        alt="RU" class="lang-icon">
                     <span>RU</span>
                 </button>
-                <button class="icon-btn user-btn">
+                <a href="register.html" class="btn btn-primary guest-only">Регистрация</a>
+                <a href="profile.html" class="icon-btn user-btn auth-only">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbfbfb" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                         <circle cx="12" cy="7" r="4" />
                     </svg>
-                </button>
+                </a>
                 <button class="menu-toggle" onclick="toggleMenu()">
                     <span></span>
                     <span></span>
@@ -67,6 +67,7 @@
                 <h1 class="hero-title">Ваш ключ к<br>финансовому<br>успеху</h1>
                 <p class="hero-subtitle">Отслеживайте рынки с нашими инновационными<br>инструментами и всегда будьте в
                     курсе</p>
+                <a href="register.html" class="btn btn-primary btn-hero guest-only">Регистрация</a>
             </div>
             <div class="hero-stats">
                 <h3 class="stats-title">Статистика за последние 24 часа</h3>
@@ -308,19 +309,20 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="#" class="footer-link">Условия и положения</a>
-                    <span class="footer-divider">|</span>
-                    <a href="#" class="footer-link">Политика файлов куки</a>
-                    <span class="footer-divider">|</span>
-                    <a href="#" class="footer-link">Политика конфиденциальности</a>
-                    <span class="footer-divider">|</span>
-                    <span class="footer-text">Telegram support</span>
-                </div>
-                <p class="copyright">Copyright © 2026 AI.BOOST | Все права защищены</p>
+    <footer class="footer" style="padding: 60px 0 40px; background: #0A0A0F;">
+        <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
+            <div class="footer-logo">
+                <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                    alt="AI.BOOST Logo" style="height: 55px;">
+            </div>
+            <div style="text-align: center; color: #C4C4C4; font-size: 12px; line-height: 1.8;">
+                <p style="margin: 0;">Copyright © 2026 AI.BOOST | Все права защищены | <a href="https://t.me/aiboostapp"
+                        style="color: #B4B9C9; text-decoration: none;">Telegram support</a> |</p>
+                <p style="margin: 8px 0 0;">
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Условия и положения</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика конфиденциальности</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика файлов куки</a>
+                </p>
             </div>
         </div>
     </footer>
@@ -338,6 +340,7 @@
         <button class="btn btn-outline" id="acceptCookies">OK</button>
     </div>
 
+    <script src="auth.js"></script>
     <script src="script.js"></script>
 </body>
 

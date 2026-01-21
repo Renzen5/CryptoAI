@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инструкция - AI.BOOST</title>
+    <meta name="description" content="Видеоинструкция по использованию AI.BOOST - платформы для крипто-трейдинга">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase.js"></script>
+    <style>
+        /* Instructions Page Specific Styles */
+        .instructions-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .instructions-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 20px 60px;
+            background: #0A0A0F;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 900px;
+            border-radius: 20px;
+            padding: 3px;
+            background: linear-gradient(135deg, #0A7CFF 0%, #0400FF 50%, #0A7CFF 100%);
+            margin-bottom: 40px;
+        }
+
+        .video-inner {
+            background: #0A0A0F;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .video-inner iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            display: block;
+            border: none;
+        }
+
+        .instructions-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-signal {
+            background: linear-gradient(90deg, #0B6EE1 0%, #0A7CFF 100%);
+            color: #FBFBFB;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-signal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(10, 124, 255, 0.3);
+        }
+
+        .btn-home {
+            background: transparent;
+            color: #FBFBFB;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .btn-home:hover {
+            border-color: #0A7CFF;
+            background: rgba(10, 124, 255, 0.1);
+        }
+
+        /* Instructions Footer */
+        .instructions-footer {
+            background: #0A0A0F;
+            padding: 40px 0 30px;
+            text-align: center;
+        }
+
+        .instructions-footer .footer-logo {
+            margin-bottom: 20px;
+        }
+
+        .instructions-footer .footer-logo img {
+            height: 40px;
+        }
+
+        .instructions-footer .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .instructions-footer .footer-link {
+            color: #0A7CFF;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .instructions-footer .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        .instructions-footer .footer-divider {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .instructions-footer .copyright {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        /* Active nav link style */
+        .nav-link.active {
+            color: #0B6EE1;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .instructions-content {
+                padding: 100px 20px 40px;
+            }
+
+            .video-container {
+                margin-bottom: 30px;
+            }
+
+            .instructions-buttons {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .btn-signal,
+            .btn-home {
+                width: 100%;
+                text-align: center;
+            }
+
+            .instructions-footer .footer-links {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .instructions-footer .footer-divider {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="instructions-page">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                        alt="AI.BOOST Logo" class="logo-img">
+                </a>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="about.html" class="nav-link">О нас</a>
+                <a href="signal.html" class="nav-link auth-only">Сигнал</a>
+                <a href="history.html" class="nav-link auth-only">История сделок</a>
+                <a href="instructions.html" class="nav-link active">Инструкция</a>
+            </nav>
+            <div class="header-actions">
+                <button class="lang-btn">
+                    <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2F06bce085-a175-41db-be61-2172833b6876.png"
+                        alt="RU" class="lang-icon">
+                    <span>RU</span>
+                </button>
+                <a href="register.html" class="btn btn-primary guest-only">Регистрация</a>
+                <a href="profile.html" class="icon-btn user-btn auth-only">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbfbfb" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </a>
+                <button class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Video Content -->
+    <main class="instructions-content">
+        <div class="video-container">
+            <div class="video-inner">
+                <iframe src="https://player.vimeo.com/video/YOUR_VIDEO_ID?h=YOUR_HASH&title=0&byline=0&portrait=0"
+                    allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
+        <div class="instructions-buttons">
+            <a href="register.html" class="btn btn-primary guest-only">Регистрация</a>
+            <a href="signal.html" class="btn btn-primary auth-only">Получить новый сигнал</a>
+            <a href="index.html" class="btn-home">На главную</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" style="padding: 60px 0 40px; background: #0A0A0F;">
+        <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
+            <div class="footer-logo">
+                <img src="https://storage.googleapis.com/codeless-app.appspot.com/uploads%2Fimages%2F0SIQZ_8GWaNUdyGDF6vz%2Fef436a06-9aee-4116-922b-97667c500ae5.png"
+                    alt="AI.BOOST Logo" style="height: 55px;">
+            </div>
+            <div style="text-align: center; color: #C4C4C4; font-size: 12px; line-height: 1.8;">
+                <p style="margin: 0;">Copyright © 2026 AI.BOOST | Все права защищены | <a href="https://t.me/aiboostapp"
+                        style="color: #B4B9C9; text-decoration: none;">Telegram support</a> |</p>
+                <p style="margin: 8px 0 0;">
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Условия и положения</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика конфиденциальности</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика файлов куки</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const nav = document.querySelector('.nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (nav && menuToggle) {
+                nav.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            }
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(10, 10, 15, 0.98)';
+            } else {
+                header.style.background = 'rgba(10, 10, 15, 0.95)';
+            }
+        });
+    </script>
+    <script src="auth.js"></script>
+</body>
+
+</html>
