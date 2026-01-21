@@ -1,50 +1,30 @@
--- AI.BOOST Supabase Database Schema
--- Run this SQL in your Supabase SQL Editor: https://supabase.com/dashboard/project/YOUR_PROJECT/sql
+-- Telegram Whitelist Schema for AI.BOOST
+-- Run this in Supabase SQL Editor
 
--- Profiles table (links to auth.users)
-CREATE TABLE IF NOT EXISTS profiles (
-  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
-  email TEXT,
-  broker_id TEXT,
-  is_verified BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+-- Drop old auth if exists (we're replacing with Telegram)
+-- Note: Keep profiles table but add telegram_id
 
--- Trade history table
-CREATE TABLE IF NOT EXISTS trade_history (
+-- Telegram whitelist table
+CREATE TABLE IF NOT EXISTS telegram_whitelist (
   id BIGSERIAL PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  symbol TEXT NOT NULL,
-  direction TEXT NOT NULL,
-  open_price DECIMAL NOT NULL,
-  close_price DECIMAL NOT NULL,
-  result TEXT NOT NULL,
-  minutes INTEGER,
-  indicator TEXT,
+  telegram_id BIGINT UNIQUE NOT NULL,
+  username TEXT,
+  first_name TEXT,
+  last_name TEXT,
+  is_active BOOLEAN DEFAULT TRUE,
+  added_by BIGINT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable Row Level Security
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE trade_history ENABLE ROW LEVEL SECURITY;
+-- Update profiles to link with Telegram
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS telegram_id BIGINT UNIQUE;
 
--- RLS Policies for profiles
-CREATE POLICY "Users can view own profile" ON profiles
-  FOR SELECT USING (auth.uid() = id);
+-- Enable RLS
+ALTER TABLE telegram_whitelist ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can update own profile" ON profiles
-  FOR UPDATE USING (auth.uid() = id);
+-- Allow authenticated users to read whitelist (for checking access)
+CREATE POLICY "anon_can_read_whitelist" ON telegram_whitelist
+  FOR SELECT USING (true);
 
-CREATE POLICY "Users can insert own profile" ON profiles
-  FOR INSERT WITH CHECK (auth.uid() = id);
-
--- RLS Policies for trade_history
-CREATE POLICY "Users can view own trades" ON trade_history
-  FOR SELECT USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can insert own trades" ON trade_history
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
-
--- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_trade_history_user_id ON trade_history(user_id);
-CREATE INDEX IF NOT EXISTS idx_trade_history_created_at ON trade_history(created_at DESC);
+-- Create index for fast lookups
+CREATE INDEX IF NOT EXISTS idx_whitelist_telegram_id ON telegram_whitelist(telegram_id);
