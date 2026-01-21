@@ -49,7 +49,7 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
     """Main menu keyboard for regular users"""
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
-            text="🚀 Открыть AI.BOOST",
+            text="🚀 Открыть INSIDER.AI",
             web_app=WebAppInfo(url=WEBAPP_URL)
         )]
     ])
@@ -120,7 +120,7 @@ async def cmd_start(message: Message):
     # Check if user is in whitelist
     if await check_whitelist(user_id):
         await message.answer(
-            "🚀 <b>Добро пожаловать в AI.BOOST!</b>\n\n"
+            "🚀 <b>Добро пожаловать в INSIDER.AI!</b>\n\n"
             "Нажмите кнопку ниже, чтобы открыть приложение:",
             reply_markup=get_main_keyboard(),
             parse_mode="HTML"
