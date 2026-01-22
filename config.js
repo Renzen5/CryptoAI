@@ -9,3 +9,6 @@ const SUPABASE_CONFIG = {
 
 // Edge Function URL for OpenAI proxy
 const OPENAI_PROXY_URL = 'https://uuwecropqwonevrdrstw.supabase.co/functions/v1/openai-proxy';
+
+// Edge Function URL for Pocket Option verification
+const POCKET_VERIFY_URL = 'https://uuwecropqwonevrdrstw.supabase.co/functions/v1/pocket-verify';

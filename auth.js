@@ -7,6 +7,23 @@
     let telegramUser = null;
     let hasWhitelistAccess = false;
 
+    // ========== DEV MODE (Bypass) ==========
+    let isDevMode = localStorage.getItem('dev_mode') === 'true';
+
+    window.enableDevMode = function () {
+        localStorage.setItem('dev_mode', 'true');
+        isDevMode = true;
+        console.log('✅ DEV MODE ENABLED! Reloading...');
+        location.reload();
+    };
+
+    window.disableDevMode = function () {
+        localStorage.removeItem('dev_mode');
+        isDevMode = false;
+        console.log('🚫 DEV MODE DISABLED! Reloading...');
+        location.reload();
+    };
+
     // Check if running inside Telegram WebApp
     function isInTelegram() {
         return window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user;
@@ -64,6 +81,20 @@
 
     // Initialize whitelist check (run on page load)
     async function initWhitelistCheck() {
+        // DEV MODE BYPASS
+        if (isDevMode) {
+            console.warn('⚠️ RUNNING IN DEV MODE - TELEGRAM CHECK BYPASSED');
+            telegramUser = {
+                id: 777777,
+                first_name: 'Dev',
+                last_name: 'Admin',
+                username: 'dev_admin',
+                language_code: 'en'
+            };
+            hasWhitelistAccess = true;
+            return true;
+        }
+
         // Check if in Telegram
         if (!isInTelegram()) {
             showAccessDenied('Это приложение доступно только через Telegram.');
@@ -206,10 +237,33 @@
         return { success: true, user: data.user };
     }
 
-    // Verify user (save broker ID)
+    // Verify user (validate broker ID via Pocket Option API, then save)
     async function verify(brokerId) {
         if (!hasWhitelistAccess) return { success: false, error: 'No whitelist access' };
 
+        // First, verify the ID via Pocket Option API
+        try {
+            const verifyUrl = window.POCKET_VERIFY_URL || 'https://uuwecropqwonevrdrstw.supabase.co/functions/v1/pocket-verify';
+
+            const response = await fetch(verifyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id: brokerId })
+            });
+
+            const result = await response.json();
+
+            if (!result.valid) {
+                return { success: false, error: result.error || 'ID не прошёл проверку' };
+            }
+        } catch (apiError) {
+            console.error('Pocket Option API error:', apiError);
+            return { success: false, error: 'Ошибка проверки ID. Попробуйте позже.' };
+        }
+
+        // If API validation passed, save to database
         const supabase = getClient();
         if (!supabase) {
             const user = getLocalUser();
@@ -355,6 +409,10 @@
         // UI & protection
         updateUI: updateUI,
         protectPage: protectPage,
-        checkVerificationAccess: checkVerificationAccess
+        checkVerificationAccess: checkVerificationAccess,
+
+        // Dev tools
+        enableDevMode: window.enableDevMode,
+        disableDevMode: window.disableDevMode
     };
 })();

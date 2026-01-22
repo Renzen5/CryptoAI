@@ -388,29 +388,30 @@
                 </p>
             </div>
         </div>
-        <!-- Footer -->
-        <footer class="footer" style="padding: 60px 0 40px; background: #0A0A0F;">
-            <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
-                <div class="footer-logo">
-                    <img src="logo.png" alt="AI.BOOST Logo" style="height: 55px;">
-                </div>
-                <div style="text-align: center; color: #C4C4C4; font-size: 12px; line-height: 1.8;">
-                    <p style="margin: 0;">Copyright © 2026 AI.BOOST | Все права защищены | <a
-                            href="https://t.me/aiboostapp" style="color: #B4B9C9; text-decoration: none;">Telegram
-                            support</a> |</p>
-                    <p style="margin: 8px 0 0;">
-                        <a href="#" style="color: #B4B9C9; text-decoration: underline;">Условия и положения</a> |
-                        <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика конфиденциальности</a>
-                        |
-                        <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика файлов куки</a>
-                    </p>
-                </div>
-            </div>
-        </footer>
 
     </div>
 
+    <!-- Footer -->
+    <footer class="footer" style="width: 100%; padding: 60px 0 40px; background: #0A0A0F;">
+        <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
+            <div class="footer-logo">
+                <img src="logo.png" alt="INSIDER.AI Logo" style="height: 55px;">
+            </div>
+            <div style="text-align: center; color: #C4C4C4; font-size: 12px; line-height: 1.8;">
+                <p style="margin: 0;">Copyright © 2026 INSIDER.AI | Все права защищены | <a
+                        href="https://t.me/aiboostapp" style="color: #B4B9C9; text-decoration: none;">Telegram
+                        support</a> |</p>
+                <p style="margin: 8px 0 0;">
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Условия и положения</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика конфиденциальности</a> |
+                    <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика файлов куки</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
     <script src="auth.js"></script>
+    <script src="script.js"></script>
     <script>
         // Check access immediately
         Auth.checkVerificationAccess();
@@ -459,6 +460,7 @@
 
         async function completeVerification() {
             const idInput = document.getElementById('accountId');
+            const btn = document.querySelector('.btn-create-account');
             const id = idInput.value.trim();
 
             if (!id) {
@@ -466,11 +468,31 @@
                 return;
             }
 
-            const result = await Auth.verify(id);
-            if (result.success) {
-                window.location.href = 'index.html';
-            } else {
-                alert('Ошибка верификации: ' + (result.error || 'Неизвестная ошибка'));
+            // Show loading state
+            const originalText = btn.textContent;
+            btn.textContent = 'Проверка ID...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+
+            try {
+                const result = await Auth.verify(id);
+                if (result.success) {
+                    btn.textContent = '✓ Успешно!';
+                    btn.style.background = 'linear-gradient(90deg, #00C853 0%, #00A843 100%)';
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                } else {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    alert('Ошибка верификации: ' + (result.error || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                alert('Ошибка: ' + error.message);
             }
         }
 

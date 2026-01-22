@@ -710,7 +710,7 @@
                 <a href="about.html" class="nav-link">О нас</a>
                 <a href="signal.html" class="nav-link active auth-only">Сигнал</a>
                 <a href="history.html" class="nav-link auth-only">История сделок</a>
-                <a href="instructions.html" class="nav-link">Инструкция</a>
+
             </nav>
             <div class="header-actions">
                 <button class="lang-btn">
@@ -1437,7 +1437,8 @@
             }
 
             const totalSeconds = seconds;
-            let remaining = seconds;
+            // Store the absolute end time (timestamp)
+            const endTimestamp = Date.now() + (seconds * 1000);
 
             const progressBar = document.getElementById('countdown-progress');
             const countdownTimeEl = document.getElementById('countdown-time');
@@ -1461,11 +1462,12 @@
                 return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
             }
 
-            // Set initial time
-            countdownTimeEl.textContent = formatTime(remaining);
+            // Update function that calculates remaining time from real clock
+            function updateCountdown() {
+                const now = Date.now();
+                const remainingMs = endTimestamp - now;
+                const remaining = Math.max(0, Math.ceil(remainingMs / 1000));
 
-            countdownInterval = setInterval(() => {
-                remaining--;
                 const percent = (remaining / totalSeconds) * 100;
                 progressBar.style.width = percent + '%';
                 countdownTimeEl.textContent = formatTime(remaining);
@@ -1485,7 +1487,13 @@
 
                     showResult();
                 }
-            }, 1000);
+            }
+
+            // Set initial time immediately
+            updateCountdown();
+
+            // Update every second
+            countdownInterval = setInterval(updateCountdown, 1000);
         }
 
 
@@ -1807,8 +1815,9 @@
                 <img src="logo.png" alt="AI.BOOST Logo" style="height: 55px;">
             </div>
             <div style="text-align: center; color: #C4C4C4; font-size: 12px; line-height: 1.8;">
-                <p style="margin: 0;">Copyright © 2026 AI.BOOST | Все права защищены | <a href="https://t.me/aiboostapp"
-                        style="color: #B4B9C9; text-decoration: none;">Telegram support</a> |</p>
+                <p style="margin: 0;">Copyright © 2026 INSIDER.AI | Все права защищены | <a
+                        href="https://t.me/aiboostapp" style="color: #B4B9C9; text-decoration: none;">Telegram
+                        support</a> |</p>
                 <p style="margin: 8px 0 0;">
                     <a href="#" style="color: #B4B9C9; text-decoration: underline;">Условия и положения</a> |
                     <a href="#" style="color: #B4B9C9; text-decoration: underline;">Политика конфиденциальности</a> |
@@ -1817,6 +1826,8 @@
             </div>
         </div>
     </footer>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

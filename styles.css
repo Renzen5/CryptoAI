@@ -1061,3 +1061,45 @@ a {
         font-size: 18px;
     }
 }
+
+/* Snow Effect */
+.snowflake {
+    position: fixed;
+    top: -20px;
+    z-index: 9999;
+    pointer-events: none;
+    color: white;
+    font-size: 24px;
+    opacity: 0.8;
+    animation-name: snowfall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes snowfall {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    100% {
+        /* Falling down 110vh and moving right 80vh to create ~45 degree angle */
+        transform: translate(80vh, 110vh) rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .snowflake {
+        animation-name: snowfall-mobile;
+    }
+}
+
+@keyframes snowfall-mobile {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    100% {
+        /* Less horizontal movement for mobile portrait */
+        transform: translate(50vw, 110vh) rotate(360deg);
+    }
+}

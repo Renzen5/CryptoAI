@@ -29,16 +29,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const cookieBanner = document.getElementById('cookieBanner');
     const acceptCookiesBtn = document.getElementById('acceptCookies');
 
-    // Check if cookies have been accepted
-    if (!localStorage.getItem('cookiesAccepted')) {
+    // Check if cookies have been accepted (only if elements exist)
+    if (cookieBanner && !localStorage.getItem('cookiesAccepted')) {
         cookieBanner.classList.add('show');
     }
 
     // Accept cookies button click
-    acceptCookiesBtn.addEventListener('click', function () {
-        localStorage.setItem('cookiesAccepted', 'true');
-        cookieBanner.classList.remove('show');
-    });
+    if (acceptCookiesBtn) {
+        acceptCookiesBtn.addEventListener('click', function () {
+            localStorage.setItem('cookiesAccepted', 'true');
+            if (cookieBanner) cookieBanner.classList.remove('show');
+        });
+    }
 
     // FAQ Accordion
     const faqItems = document.querySelectorAll('.faq-item');
@@ -152,4 +154,41 @@ document.addEventListener('DOMContentLoaded', function () {
         el.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
         fadeInObserver.observe(el);
     });
+});
+
+// Snow Effect Generator
+document.addEventListener('DOMContentLoaded', function () {
+    function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        snowflake.innerHTML = '❄';
+
+        // Random horizontal start position (-50vw to 100vw to cover diagonal movement)
+        const startLeft = Math.random() * 120 - 20;
+        snowflake.style.left = startLeft + 'vw';
+
+        // Random animation duration
+        const duration = Math.random() * 3 + 2; // 2s to 5s
+        snowflake.style.animationDuration = duration + 's';
+
+        // Random size
+        const isMobile = window.innerWidth < 768;
+        const minSize = isMobile ? 8 : 10;
+        const sizeRange = isMobile ? 10 : 15;
+        const size = Math.random() * sizeRange + minSize; // Mobile: 8-18px, Desktop: 10-25px
+        snowflake.style.fontSize = size + 'px';
+
+        // Random opacity
+        snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+
+        document.body.appendChild(snowflake);
+
+        // Remove after animation
+        setTimeout(() => {
+            snowflake.remove();
+        }, duration * 1000);
+    }
+
+    // Create snowflake every 100ms
+    setInterval(createSnowflake, 100);
 });
