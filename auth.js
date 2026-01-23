@@ -1,11 +1,79 @@
 // Auth System for AI.BOOST
 // 1. Check Telegram whitelist for access
 // 2. Use Supabase Auth (email/password) for account
+// 3. Use Telegram CloudStorage for session persistence (fixes iOS)
 
 (function () {
     let currentUser = null;
     let telegramUser = null;
     let hasWhitelistAccess = false;
+
+    // ========== TELEGRAM CLOUD STORAGE (fixes iOS localStorage issue) ==========
+    // iOS WebView clears localStorage on Telegram restart, so we use CloudStorage
+
+    function cloudStorageAvailable() {
+        return window.Telegram &&
+            window.Telegram.WebApp &&
+            window.Telegram.WebApp.CloudStorage;
+    }
+
+    // Promise wrapper for CloudStorage.getItem
+    function cloudGet(key) {
+        return new Promise((resolve) => {
+            if (!cloudStorageAvailable()) {
+                // Fallback to localStorage
+                const value = localStorage.getItem(key);
+                resolve(value);
+                return;
+            }
+            window.Telegram.WebApp.CloudStorage.getItem(key, (error, value) => {
+                if (error) {
+                    console.warn('CloudStorage get error:', error);
+                    // Fallback to localStorage
+                    resolve(localStorage.getItem(key));
+                } else {
+                    resolve(value || null);
+                }
+            });
+        });
+    }
+
+    // Promise wrapper for CloudStorage.setItem
+    function cloudSet(key, value) {
+        return new Promise((resolve) => {
+            // Always save to localStorage as backup
+            localStorage.setItem(key, value);
+
+            if (!cloudStorageAvailable()) {
+                resolve(true);
+                return;
+            }
+            window.Telegram.WebApp.CloudStorage.setItem(key, value, (error) => {
+                if (error) {
+                    console.warn('CloudStorage set error:', error);
+                }
+                resolve(!error);
+            });
+        });
+    }
+
+    // Promise wrapper for CloudStorage.removeItem
+    function cloudRemove(key) {
+        return new Promise((resolve) => {
+            localStorage.removeItem(key);
+
+            if (!cloudStorageAvailable()) {
+                resolve(true);
+                return;
+            }
+            window.Telegram.WebApp.CloudStorage.removeItem(key, (error) => {
+                if (error) {
+                    console.warn('CloudStorage remove error:', error);
+                }
+                resolve(!error);
+            });
+        });
+    }
 
     // ========== DEV MODE (Bypass) ==========
     let isDevMode = localStorage.getItem('dev_mode') === 'true';
@@ -135,7 +203,7 @@
 
         const supabase = getClient();
         if (!supabase) {
-            const user = getLocalUser();
+            const user = await getLocalUser();
             return user !== null && user.active === true;
         }
 
@@ -152,7 +220,7 @@
 
         const supabase = getClient();
         if (!supabase) {
-            const user = getLocalUser();
+            const user = await getLocalUser();
             return user !== null && user.active === false;
         }
 
@@ -184,7 +252,7 @@
 
         const supabase = getClient();
         if (!supabase) {
-            localStorage.setItem('aiboost_user', JSON.stringify({
+            await cloudSet('aiboost_user', JSON.stringify({
                 email: email,
                 active: false,
                 loggedAt: Date.now()
@@ -217,7 +285,7 @@
 
         const supabase = getClient();
         if (!supabase) {
-            localStorage.setItem('aiboost_user', JSON.stringify({
+            await cloudSet('aiboost_user', JSON.stringify({
                 email: email,
                 active: true,
                 loggedAt: Date.now()
@@ -266,11 +334,11 @@
         // If API validation passed, save to database
         const supabase = getClient();
         if (!supabase) {
-            const user = getLocalUser();
+            const user = await getLocalUser();
             if (user) {
                 user.active = true;
                 user.brokerId = brokerId;
-                localStorage.setItem('aiboost_user', JSON.stringify(user));
+                await cloudSet('aiboost_user', JSON.stringify(user));
             }
             updateUI();
             return { success: true };
@@ -296,7 +364,7 @@
         if (supabase) {
             await supabase.auth.signOut();
         }
-        localStorage.removeItem('aiboost_user');
+        await cloudRemove('aiboost_user');
         updateUI();
         window.location.href = 'index.html';
     }
@@ -304,7 +372,7 @@
     // Get current user
     async function getCurrentUser() {
         const supabase = getClient();
-        if (!supabase) return getLocalUser();
+        if (!supabase) return await getLocalUser();
 
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return null;
@@ -319,8 +387,8 @@
         };
     }
 
-    function getLocalUser() {
-        const user = localStorage.getItem('aiboost_user');
+    async function getLocalUser() {
+        const user = await cloudGet('aiboost_user');
         return user ? JSON.parse(user) : null;
     }
 
