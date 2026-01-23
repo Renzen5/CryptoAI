@@ -113,10 +113,10 @@
                 .from('telegram_whitelist')
                 .select('id, is_active')
                 .eq('telegram_id', telegramId)
-                .single();
+                .limit(1);
 
-            if (error || !data) return false;
-            return data.is_active === true;
+            if (error || !data || data.length === 0) return false;
+            return data[0].is_active === true;
         } catch (e) {
             console.error('Whitelist check error:', e);
             return false;
@@ -240,10 +240,10 @@
             .from('profiles')
             .select('*')
             .eq('id', userId)
-            .single();
+            .limit(1);
 
-        if (error) return null;
-        return data;
+        if (error || !data || data.length === 0) return null;
+        return data[0];
     }
 
     // Register new user

@@ -78,7 +78,26 @@ Deno.serve(async (req) => {
 
         // Check if the user exists and is valid
         // The API returns user info if the user is registered under this partner
-        if (data && (data.user_id || data.id)) {
+        if (data && (data.uid || data.user_id || data.id)) {
+            // Check minimum deposit requirement ($10)
+            const MIN_DEPOSIT = 10;
+            const sumDeposits = data.sum_deposits || 0;
+
+            if (sumDeposits < MIN_DEPOSIT) {
+                return new Response(JSON.stringify({
+                    valid: false,
+                    error: `Для активации аккаунта необходимо пополнить баланс минимум на $${MIN_DEPOSIT}. Ваш текущий депозит: $${sumDeposits}`,
+                    deposit_required: true,
+                    current_deposit: sumDeposits,
+                    min_deposit: MIN_DEPOSIT
+                }), {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                    },
+                })
+            }
+
             return new Response(JSON.stringify({
                 valid: true,
                 user_id: user_id,

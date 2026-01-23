@@ -319,6 +319,74 @@
             color: #FBFBFB;
             margin: 20px 0 10px;
         }
+
+        /* Deposit Modal Specifics */
+        .deposit-modal-content {
+            background: linear-gradient(180deg, #1E1E2E 0%, #151525 100%);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            text-align: center;
+        }
+
+        .warning-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #FF4444;
+        }
+
+        .modal-text-deposit {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #CCCCCC;
+            margin-bottom: 30px;
+        }
+
+        .modal-text-deposit strong {
+            color: white;
+            font-weight: 700;
+        }
+
+        .btn-deposit {
+            display: inline-block;
+            background: linear-gradient(90deg, #00C853 0%, #00A843 100%);
+            color: #fff;
+            padding: 16px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 8px 25px rgba(0, 200, 83, 0.3);
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-sizing: border-box;
+        }
+
+        .btn-deposit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 200, 83, 0.5);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 
@@ -391,6 +459,28 @@
 
     </div>
 
+    <!-- Deposit Error Modal -->
+    <div class="modal" id="depositErrorModal">
+        <div class="modal-content deposit-modal-content">
+            <button class="modal-close" onclick="closeDepositModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="warning-icon" id="errorModalIcon">💰</div>
+            <h2 class="modal-title" id="errorModalTitle">Требуется пополнение</h2>
+            <div class="modal-text-deposit" id="depositErrorMessage">
+                <!-- Error message will be here -->
+            </div>
+            <!-- Affiliate link for deposit -->
+            <a href="https://p.finance/ru/cabinet/deposit-step-1" target="_blank" class="btn-deposit"
+                id="errorModalBtn">
+                Пополнить сейчас
+            </a>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer" style="width: 100%; padding: 60px 0 40px; background: #0A0A0F;">
         <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
@@ -458,6 +548,18 @@
             }
         });
 
+        // Deposit Modal Logic
+        function closeDepositModal() {
+            document.getElementById('depositErrorModal').classList.remove('active');
+        }
+
+        // Close deposit modal on outside click
+        document.getElementById('depositErrorModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeDepositModal();
+            }
+        });
+
         async function completeVerification() {
             const idInput = document.getElementById('accountId');
             const btn = document.querySelector('.btn-create-account');
@@ -486,7 +588,31 @@
                     btn.textContent = originalText;
                     btn.disabled = false;
                     btn.style.opacity = '1';
-                    alert('Ошибка верификации: ' + (result.error || 'Неизвестная ошибка'));
+
+                    // Check error type
+                    const modalIcon = document.getElementById('errorModalIcon');
+                    const modalTitle = document.getElementById('errorModalTitle');
+                    const modalBtn = document.getElementById('errorModalBtn');
+
+                    if (result.deposit_required || (result.error && result.error.includes('пополнить баланс'))) {
+                        // Deposit needed error
+                        modalIcon.textContent = '💰';
+                        modalTitle.textContent = 'Требуется пополнение';
+                        modalBtn.textContent = 'Пополнить сейчас';
+                        modalBtn.href = 'https://p.finance/ru/cabinet/deposit-step-1';
+                    } else {
+                        // Registration/Other error
+                        modalIcon.textContent = '⚠️';
+                        modalTitle.textContent = 'Ошибка верификации';
+                        modalBtn.textContent = 'Зарегистрироваться';
+                        modalBtn.href = 'https://m.pocketoption.com/ru/register?utm_campaign=810806&utm_source=affiliate&utm_medium=sr&a=I4fJBz7sqi19db&ac=7777&code=BONUS911';
+                    }
+
+                    // Open modal
+                    const depositModal = document.getElementById('depositErrorModal');
+                    const messageEl = document.getElementById('depositErrorMessage');
+                    messageEl.innerHTML = result.error ? result.error.replace(/\n/g, '<br>') : 'Неизвестная ошибка';
+                    depositModal.classList.add('active');
                 }
             } catch (error) {
                 btn.textContent = originalText;
